@@ -96,8 +96,8 @@ public class HomeController {
           , consumes = "application/json", headers = {"content-type=application/json; charset=utf-8"})
   @ResponseBody
   public String findUser(@RequestBody Person person) {
-    System.out.println("Email :" + person.getEmail());
-    System.out.println("Password :" + person.getPassword());
+//    System.out.println("Email :" + person.getEmail());
+//    System.out.println("Password :" + person.getPassword());
 
     List<Person> personList = personDao.findByEmail(person.getEmail());
 
