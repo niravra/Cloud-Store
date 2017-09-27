@@ -10,16 +10,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 import java.util.List;
 
 @Controller
 public class HomeController {
+
+  @Autowired
+  private BCryptPasswordEncoder bCryptPasswordEncoder;
 
   @Autowired
   private PersonDao personDao;
@@ -72,10 +77,11 @@ public class HomeController {
   }
 
   else {
+    String encrypt = bCryptPasswordEncoder.encode(person.getPassword());
     Person p = new Person();
     p.setName(person.getName());
     p.setEmail(person.getEmail());
-    p.setPassword(person.getPassword());
+    p.setPassword(encrypt);
     personDao.save(p);
 
     JsonObject jsonObject = new JsonObject();
