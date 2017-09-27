@@ -1,4 +1,6 @@
-language: java
+language:
+  - java
+
 jdk:
   - oraclejdk8
 
@@ -11,4 +13,4 @@ script:
 notifications:
   email:
     recipients:
-- kar.n@husky.neu.edu
+      - kar.n@husky.neu.edu
