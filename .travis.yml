@@ -1,0 +1,22 @@
+
+# <Niravra Kar>, <001252638>, <kar.n@husky.neu.edu>
+# <Sumedh Saraf>, <001267030>, <saraf.s@husky.neu.edu>
+# <Parakh Mahajan>, <001236045>, <mahajan.pa@husky.neu.edu>
+# <Ashwini Thaokar>, <001282202>, <thaokar.a@husky.neu.edu>
+
+language:
+  - java
+
+jdk:
+  - oraclejdk8
+
+sudo: false
+install: true
+
+script:
+  - ./gradlew war
+
+notifications:
+  email:
+    recipients:
+      - kar.n@husky.neu.edu
