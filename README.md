@@ -1,6 +1,4 @@
 # csye6225-fall2017
-<<<<<<< HEAD
-
 NetWork Structures and Cloud Computing
 =======
 # Team Members #
