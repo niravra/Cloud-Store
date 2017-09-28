@@ -35,4 +35,4 @@ Continuous integration tests were build using Travis CI
 * Add a JSON Body Data with values name, email and password. Make sure the values are generated randomly
 * Add Listener Table/Tree to view the results
 # Travis CI link for the Project #
-[a link](https://travis-ci.com/Niravra/csye6225-fall2017)
+[Travis CI Link](https://travis-ci.com/Niravra/csye6225-fall2017)
