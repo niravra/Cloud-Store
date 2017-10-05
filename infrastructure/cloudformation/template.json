@@ -1,0 +1,46 @@
+{
+	"AWSTemplateFormatVersion": "2010-09-09",
+	"Description": "Sample CloudFormation Template for CSYE 6225 - Fall 2017",
+	"Resources": {
+		"EC2Instance": {
+			"Type": "AWS::EC2::Instance",
+			"Properties": {
+				"ImageId": "ami-cd0f5cb6",
+				"InstanceType": "t2.micro",
+				"SecurityGroupIds": [{
+					"Fn::GetAtt": [
+						"sgv",
+						"GroupId"
+					]
+				}],
+				"KeyName": "id_rsa"
+			}
+		},
+		"sgv": {
+			"Type": "AWS::EC2::SecurityGroup",
+			"Properties": {
+				"GroupDescription": "Enable HTTP access via port 80, SSH access via port 22",
+				"VpcId": "vpc-6cb45214",
+				"SecurityGroupIngress": [{
+						"IpProtocol": "tcp",
+						"FromPort": "80",
+						"ToPort": "80",
+						"CidrIp": "10.0.2.15/24"
+					},
+					{
+						"IpProtocol": "tcp",
+						"FromPort": "22",
+						"ToPort": "22",
+						"CidrIp": "10.0.2.15/24"
+					},
+					{
+						"IpProtocol": "tcp",
+						"FromPort": "443",
+						"ToPort": "443",
+						"CidrIp": "10.0.2.15/24"
+					}
+				]
+			}
+		}
+	}
+}
