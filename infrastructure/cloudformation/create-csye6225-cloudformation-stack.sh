@@ -14,7 +14,7 @@ KEYPAIR_NAME="id_rsa"
 aws cloudformation create-stack --stack-name mystack --template-body file:///home/ashwini/.aws/cloudformation/template.json
 
 aws ec2 create-security-group --group-name csye6225-fall2017-webapp --description "my sg" --vpc-id vpc-6cb45214
-SECURITY_ID=$(aws ec2 describe-security-groups --group-names csye6225-fall2017-webapp | grep "GroupId" | awk '{print$2}' | sed -e 's/^"//' -e 's/"$//')
+SECURITY_ID=$(aws ec2 describe-security-groups --group-names csye6225-fall2017-STACK_NAME-webapp | grep "GroupId" | awk '{print$2}' | sed -e 's/^"//' -e 's/"$//')
 echo $SECURITY_ID
 
 aws ec2 authorize-security-group-ingress --group-id $SECURITY_ID --protocol tcp --port 22 --cidr 10.0.2.15/24

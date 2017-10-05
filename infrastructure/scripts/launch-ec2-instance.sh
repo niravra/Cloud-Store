@@ -17,17 +17,18 @@ echo "Launching EC2 instance"
 INSTANCE_ID=$(aws ec2 run-instances --image-id $AMI --count 1 --instance-type $INSTANCE_TYPE --key-name $KEYPAIR_NAME --security-group-ids $SECURITY_ID --region us-east-1 | grep InstanceId | awk '{print$2}' | tr -cd '[:alnum:]\n-')
 echo $INSTANCE_ID
 echo "Checking if  instance has reached running state"
-status=1
-while [ $status == 1 ]; do
-    INSTANCE_STATUS=$(aws ec2 describe-instance-status --instance-id $INSTANCE_ID | grep -A3 "InstanceState" | grep "Name" | awk '{print$2}' | sed -e 's/^"//' -e 's/"$//')
-    if [ "$INSTANCE_STATUS" == "running" ]; then
-        status=0
-        echo "Instance is running!"
-    else
-	echo "Instance is still not in running state, wait for 30 seconds before checking again."
-	sleep 30
-    fi
-done
+aws ec2 wait instance-running --instance-ids $INSTANCE_ID
+#status=1
+#while [ $status == 1 ]; do
+#    INSTANCE_STATUS=$(aws ec2 describe-instance-status --instance-id $INSTANCE_ID | grep -A3 "InstanceState" | grep "Name" | awk '{print$2}' | sed -e 's/^"//' -e 's/"$//')
+#    if [ "$INSTANCE_STATUS" == "running" ]; then
+#        status=0
+#        echo "Instance is running!"
+#    else
+#	echo "Instance is still not in running state, wait for 30 seconds before checking again."
+#	sleep 30
+#    fi
+#done
 
 echo "Creating General Purpose SSD Volume"
 VOLUME_ID=$(aws ec2 create-volume --size 16 --region us-east-1 --availability-zone us-east-1c --volume-type gp2 | grep VolumeId | awk '{print$2}' | tr -cd '[:alnum:]\n-')
