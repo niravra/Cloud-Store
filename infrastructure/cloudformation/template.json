@@ -1,46 +1,63 @@
 {
-	"AWSTemplateFormatVersion": "2010-09-09",
-	"Description": "Sample CloudFormation Template for CSYE 6225 - Fall 2017",
-	"Resources": {
-		"EC2Instance": {
-			"Type": "AWS::EC2::Instance",
-			"Properties": {
-				"ImageId": "ami-cd0f5cb6",
-				"InstanceType": "t2.micro",
-				"SecurityGroupIds": [{
-					"Fn::GetAtt": [
-						"sgv",
-						"GroupId"
-					]
-				}],
-				"KeyName": "id_rsa"
-			}
+    "AWSTemplateFormatVersion": "2010-09-09",
+    "Description": "Sample CloudFormation Template for CSYE 6225 - Fall 2017",
+    "Parameters": {
+		"ImageId": {
+			"Type": "String"
 		},
-		"sgv": {
-			"Type": "AWS::EC2::SecurityGroup",
-			"Properties": {
-				"GroupDescription": "Enable HTTP access via port 80, SSH access via port 22",
-				"VpcId": "vpc-6cb45214",
-				"SecurityGroupIngress": [{
-						"IpProtocol": "tcp",
-						"FromPort": "80",
-						"ToPort": "80",
-						"CidrIp": "10.0.2.15/24"
-					},
-					{
-						"IpProtocol": "tcp",
-						"FromPort": "22",
-						"ToPort": "22",
-						"CidrIp": "10.0.2.15/24"
-					},
-					{
-						"IpProtocol": "tcp",
-						"FromPort": "443",
-						"ToPort": "443",
-						"CidrIp": "10.0.2.15/24"
-					}
-				]
-			}
-		}
-	}
+		"InstanceType": {
+
+			"Type": "String"
+		},
+		"KeyName": {
+			"Type": "String"
+			   }
+			}, 
+    "Resources": {
+        "EC2Instance": {
+            "Type": "AWS::EC2::Instance",
+            "Properties": {
+                "ImageId": {"Ref": "ImageId"},
+                "InstanceType": {"Ref": "InstanceType"},
+                "SecurityGroupIds": [
+                    {
+                        "Fn::GetAtt": [
+                            "SecurityGroup",
+                            "GroupId"
+                        ]
+                    }
+                ],
+                "KeyName": {"Ref": "KeyName"}
+            }
+        },
+        "SecurityGroup": {
+            "Type": "AWS::EC2::SecurityGroup",
+            "Properties": {
+                "GroupDescription": "Enable HTTP access via port 80, SSH access via port 22, HTTPS via port 443",
+                "VpcId": "vpc-6cb45214",
+                "GroupName": "csye6225-fall2017-STACK_NAME-webapp",
+		"SecurityGroupIngress": [
+                    {
+                        "IpProtocol": "tcp",
+                        "FromPort": "80",
+                        "ToPort": "80",
+                        "CidrIp": "0.0.0.0/0"
+                    },
+                    {
+                        "IpProtocol": "tcp",
+                        "FromPort": "22",
+                        "ToPort": "22",
+                        "CidrIp": "0.0.0.0/0"
+                    },
+		    {
+                        "IpProtocol": "tcp",
+                        "FromPort": "443",
+                        "ToPort": "443",
+                        "CidrIp": "0.0.0.0/0"
+                    }
+                ]
+            }
+        }
+    }
 }
+
