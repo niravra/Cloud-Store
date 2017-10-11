@@ -7,18 +7,21 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="29335c5d-c2aa-4658-a3fb-1572fe7f9dd1" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/jmeter/csye6225-fall2017-assignment3.jmx" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/jmeter/Sample_Spring_Boot_Application.jmx" afterPath="" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__com_google_guava_guava_23_1_jre.xml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/com/csye6225/demo/entity/AttachmentData.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/com/csye6225/demo/entity/Task.java" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__com_google_guava_guava_23_0.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/infrastructure/cloudformation/README.md" afterPath="" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/build/libs/ROOT.war" afterPath="$PROJECT_DIR$/build/libs/ROOT.war" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/build/libs/exploded/ROOT.war/WEB-INF/classes/com/csye6225/demo/auth/BCryptPasswordEncoderBean.class" afterPath="$PROJECT_DIR$/build/libs/exploded/ROOT.war/WEB-INF/classes/com/csye6225/demo/auth/BCryptPasswordEncoderBean.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/build/libs/exploded/ROOT.war/WEB-INF/classes/com/csye6225/demo/auth/BasicAuthEntryPoint.class" afterPath="$PROJECT_DIR$/build/libs/exploded/ROOT.war/WEB-INF/classes/com/csye6225/demo/auth/BasicAuthEntryPoint.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/build/libs/exploded/ROOT.war/WEB-INF/classes/com/csye6225/demo/auth/WebSecurityConfig.class" afterPath="$PROJECT_DIR$/build/libs/exploded/ROOT.war/WEB-INF/classes/com/csye6225/demo/auth/WebSecurityConfig.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/build/libs/exploded/ROOT.war/WEB-INF/classes/com/csye6225/demo/controllers/HomeController.class" afterPath="$PROJECT_DIR$/build/libs/exploded/ROOT.war/WEB-INF/classes/com/csye6225/demo/controllers/HomeController.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/classes/com/csye6225/demo/auth/BCryptPasswordEncoderBean.class" afterPath="$PROJECT_DIR$/out/production/classes/com/csye6225/demo/auth/BCryptPasswordEncoderBean.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/classes/com/csye6225/demo/auth/BasicAuthEntryPoint.class" afterPath="$PROJECT_DIR$/out/production/classes/com/csye6225/demo/auth/BasicAuthEntryPoint.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/classes/com/csye6225/demo/auth/WebSecurityConfig.class" afterPath="$PROJECT_DIR$/out/production/classes/com/csye6225/demo/auth/WebSecurityConfig.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/classes/com/csye6225/demo/controllers/HomeController.class" afterPath="$PROJECT_DIR$/out/production/classes/com/csye6225/demo/controllers/HomeController.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/artifacts/Gradle___ROOT_war__exploded_.xml" afterPath="$PROJECT_DIR$/.idea/artifacts/Gradle___ROOT_war__exploded_.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/gradle.xml" afterPath="$PROJECT_DIR$/.idea/gradle.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/modules/csye6225-fall2017_main.iml" afterPath="$PROJECT_DIR$/.idea/modules/csye6225-fall2017_main.iml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/modules/csye6225-fall2017_test.iml" afterPath="$PROJECT_DIR$/.idea/modules/csye6225-fall2017_test.iml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/build/libs/exploded/ROOT.war/WEB-INF/classes/application.properties" afterPath="$PROJECT_DIR$/build/libs/exploded/ROOT.war/WEB-INF/classes/application.properties" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/resources/application.properties" afterPath="$PROJECT_DIR$/out/production/resources/application.properties" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/resources/application.properties" afterPath="$PROJECT_DIR$/src/main/resources/application.properties" />
     </list>
     <ignored path="$PROJECT_DIR$/.gradle/" />
     <ignored path="$PROJECT_DIR$/build/" />
@@ -40,38 +43,8 @@
       <file leaf-file-name="HomeController.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/com/csye6225/demo/controllers/HomeController.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="181">
+            <state relative-caret-position="198">
               <caret line="28" column="13" lean-forward="false" selection-start-line="28" selection-start-column="13" selection-end-line="28" selection-end-column="13" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="BasicAuthEntryPoint.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/com/csye6225/demo/auth/BasicAuthEntryPoint.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="180">
-              <caret line="20" column="13" lean-forward="false" selection-start-line="20" selection-start-column="13" selection-end-line="20" selection-end-column="13" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="BCryptPasswordEncoderBean.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/com/csye6225/demo/auth/BCryptPasswordEncoderBean.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="108">
-              <caret line="6" column="4" lean-forward="false" selection-start-line="6" selection-start-column="4" selection-end-line="6" selection-end-column="4" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="WebSecurityConfig.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/com/csye6225/demo/auth/WebSecurityConfig.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="181">
-              <caret line="21" column="13" lean-forward="false" selection-start-line="21" selection-start-column="13" selection-end-line="21" selection-end-column="13" />
               <folding />
             </state>
           </provider>
@@ -80,7 +53,7 @@
       <file leaf-file-name="PersonDao.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/com/csye6225/demo/dao/PersonDao.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="252">
+            <state relative-caret-position="198">
               <caret line="14" column="17" lean-forward="false" selection-start-line="14" selection-start-column="17" selection-end-line="14" selection-end-column="17" />
               <folding>
                 <element signature="imports" expanded="true" />
@@ -112,8 +85,70 @@
       <file leaf-file-name="application.properties" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/resources/application.properties">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="0">
-              <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+            <state relative-caret-position="212">
+              <caret line="39" column="61" lean-forward="false" selection-start-line="39" selection-start-column="61" selection-end-line="39" selection-end-column="61" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Task.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/csye6225/demo/entity/Task.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="252">
+              <caret line="14" column="23" lean-forward="false" selection-start-line="14" selection-start-column="17" selection-end-line="14" selection-end-column="23" />
+              <folding>
+                <element signature="imports" expanded="true" />
+                <element signature="e#508#509#0" expanded="true" />
+                <element signature="e#537#538#0" expanded="true" />
+                <element signature="e#579#580#0" expanded="true" />
+                <element signature="e#615#616#0" expanded="true" />
+                <element signature="e#646#647#0" expanded="true" />
+                <element signature="e#673#674#0" expanded="true" />
+                <element signature="e#713#714#0" expanded="true" />
+                <element signature="e#745#746#0" expanded="true" />
+                <element signature="e#775#776#0" expanded="true" />
+                <element signature="e#804#805#0" expanded="true" />
+                <element signature="e#845#846#0" expanded="true" />
+                <element signature="e#881#882#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="AttachmentData.java" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/csye6225/demo/entity/AttachmentData.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-443">
+              <caret line="18" column="31" lean-forward="true" selection-start-line="18" selection-start-column="31" selection-end-line="18" selection-end-column="31" />
+              <folding>
+                <element signature="imports" expanded="true" />
+                <element signature="e#504#505#0" expanded="true" />
+                <element signature="e#535#536#0" expanded="true" />
+                <element signature="e#580#581#0" expanded="true" />
+                <element signature="e#620#621#0" expanded="true" />
+                <element signature="e#649#650#0" expanded="true" />
+                <element signature="e#676#677#0" expanded="true" />
+                <element signature="e#714#715#0" expanded="true" />
+                <element signature="e#746#747#0" expanded="true" />
+                <element signature="e#783#784#0" expanded="true" />
+                <element signature="e#816#817#0" expanded="true" />
+                <element signature="e#868#869#0" expanded="true" />
+                <element signature="e#912#913#0" expanded="true" />
+                <element signature="e#946#947#0" expanded="true" />
+                <element signature="e#976#977#0" expanded="true" />
+                <element signature="e#1022#1023#0" expanded="true" />
+                <element signature="e#1060#1061#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Person.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/csye6225/demo/entity/Person.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="112">
+              <caret line="7" column="21" lean-forward="true" selection-start-line="7" selection-start-column="21" selection-end-line="7" selection-end-column="21" />
               <folding />
             </state>
           </provider>
@@ -129,17 +164,24 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="csye6225-fall2017-assignment3.jmx" pinned="false" current-in-tab="true">
+      <file leaf-file-name="csye6225-fall2017-assignment3.jmx" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/jmeter/csye6225-fall2017-assignment3.jmx">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="288">
-              <caret line="16" column="48" lean-forward="true" selection-start-line="16" selection-start-column="48" selection-end-line="16" selection-end-column="48" />
+              <caret line="16" column="48" lean-forward="false" selection-start-line="16" selection-start-column="48" selection-end-line="16" selection-end-column="48" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
     </leaf>
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -411,7 +453,7 @@
     </option>
     <option name="modificationStamps">
       <map>
-        <entry key="$PROJECT_DIR$" value="3012434558000" />
+        <entry key="$PROJECT_DIR$" value="3015326249000" />
         <entry key="$PROJECT_DIR$/gradle/wrapper/gradle-wrapper.properties" value="3442123891" />
       </map>
     </option>
@@ -606,6 +648,10 @@
         <option value="$PROJECT_DIR$/src/main/java/com/csye6225/demo/auth/WebSecurityConfig.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/csye6225/demo/dao/PersonDao.java" />
         <option value="$PROJECT_DIR$/.travis.yml" />
+        <option value="$PROJECT_DIR$/src/main/java/com/csye6225/demo/entity/Task.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/csye6225/demo/entity/Attachment.java" />
+        <option value="$PROJECT_DIR$/src/main/resources/application.properties" />
+        <option value="$PROJECT_DIR$/src/main/java/com/csye6225/demo/entity/AttachmentData.java" />
       </list>
     </option>
   </component>
@@ -644,9 +690,8 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="AndroidView" />
       <pane id="PackagesPane" />
-      <pane id="Scratches" />
+      <pane id="AndroidView" />
       <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
@@ -654,11 +699,6 @@
             <path>
               <item name="csye6225-fall2017" type="b2602c69:ProjectViewProjectNode" />
               <item name="csye6225-fall2017" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
-            </path>
-            <path>
-              <item name="csye6225-fall2017" type="b2602c69:ProjectViewProjectNode" />
-              <item name="csye6225-fall2017" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
-              <item name="jmeter" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="csye6225-fall2017" type="b2602c69:ProjectViewProjectNode" />
@@ -718,12 +758,22 @@
               <item name="csye6225-fall2017" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
               <item name="main" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+              <item name="java" type="462c0819:PsiDirectoryNode" />
+              <item name="demo" type="462c0819:PsiDirectoryNode" />
+              <item name="entity" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="csye6225-fall2017" type="b2602c69:ProjectViewProjectNode" />
+              <item name="csye6225-fall2017" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
               <item name="resources" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
         </subPane>
       </pane>
+      <pane id="Scratches" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -934,18 +984,20 @@
       <updated>1506541422018</updated>
       <workItem from="1506541425534" duration="1384000" />
       <workItem from="1506543606796" duration="5295000" />
+      <workItem from="1507680502215" duration="5811000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="6679000" />
+    <option name="totallyTimeSpent" value="12490000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="119" y="46" width="1304" height="758" extended-state="0" />
+    <editor active="true" />
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
-      <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3290938" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3290938" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
@@ -955,7 +1007,7 @@
       <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Palette&#9;" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Image Layers" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Java Enterprise" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
@@ -964,7 +1016,7 @@
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Spring" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.24960254" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.24960254" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Bean Validation" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Web" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Gradle" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -991,16 +1043,8 @@
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/src/main/java/com/csye6225/demo/controllers/HomeController.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/csye6225/demo/auth/BCryptPasswordEncoderBean.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="108">
-          <caret line="6" column="4" lean-forward="false" selection-start-line="6" selection-start-column="4" selection-end-line="6" selection-end-column="4" />
+        <state relative-caret-position="198">
+          <caret line="28" column="13" lean-forward="false" selection-start-line="28" selection-start-column="13" selection-end-line="28" selection-end-column="13" />
           <folding />
         </state>
       </provider>
@@ -1013,25 +1057,25 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/csye6225/demo/auth/WebSecurityConfig.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/csye6225/demo/auth/BCryptPasswordEncoderBean.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="181">
-          <caret line="21" column="13" lean-forward="false" selection-start-line="21" selection-start-column="13" selection-end-line="21" selection-end-column="13" />
+        <state relative-caret-position="108">
+          <caret line="6" column="4" lean-forward="false" selection-start-line="6" selection-start-column="4" selection-end-line="6" selection-end-column="4" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/csye6225/demo/controllers/HomeController.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/csye6225/demo/auth/WebSecurityConfig.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="181">
-          <caret line="28" column="13" lean-forward="false" selection-start-line="28" selection-start-column="13" selection-end-line="28" selection-end-column="13" />
+        <state relative-caret-position="198">
+          <caret line="21" column="13" lean-forward="false" selection-start-line="21" selection-start-column="13" selection-end-line="21" selection-end-column="13" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/csye6225/demo/dao/PersonDao.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="252">
+        <state relative-caret-position="198">
           <caret line="14" column="17" lean-forward="false" selection-start-line="14" selection-start-column="17" selection-end-line="14" selection-end-column="17" />
           <folding>
             <element signature="imports" expanded="true" />
@@ -1050,14 +1094,6 @@
     <entry file="file://$PROJECT_DIR$/build.gradle">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/jmeter/Sample_Spring_Boot_Application.jmx">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1890">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding />
         </state>
@@ -1084,6 +1120,153 @@
         <state relative-caret-position="288">
           <caret line="16" column="48" lean-forward="true" selection-start-line="16" selection-start-column="48" selection-end-line="16" selection-end-column="48" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/csye6225/demo/controllers/HomeController.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/csye6225/demo/auth/BCryptPasswordEncoderBean.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="108">
+          <caret line="6" column="4" lean-forward="false" selection-start-line="6" selection-start-column="4" selection-end-line="6" selection-end-column="4" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/csye6225/demo/auth/BasicAuthEntryPoint.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="180">
+          <caret line="20" column="13" lean-forward="false" selection-start-line="20" selection-start-column="13" selection-end-line="20" selection-end-column="13" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/csye6225/demo/auth/WebSecurityConfig.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="198">
+          <caret line="21" column="13" lean-forward="false" selection-start-line="21" selection-start-column="13" selection-end-line="21" selection-end-column="13" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/csye6225/demo/controllers/HomeController.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="198">
+          <caret line="28" column="13" lean-forward="false" selection-start-line="28" selection-start-column="13" selection-end-line="28" selection-end-column="13" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/csye6225/demo/dao/PersonDao.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="198">
+          <caret line="14" column="17" lean-forward="false" selection-start-line="14" selection-start-column="17" selection-end-line="14" selection-end-column="17" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/.travis.yml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/build.gradle">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/jmeter/Sample_Spring_Boot_Application.jmx" />
+    <entry file="file://$PROJECT_DIR$/jmeter/auth.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/jmeter/csye6225-fall2017-assignment3.jmx">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="288">
+          <caret line="16" column="48" lean-forward="false" selection-start-line="16" selection-start-column="48" selection-end-line="16" selection-end-column="48" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/csye6225/demo/entity/Person.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="112">
+          <caret line="7" column="21" lean-forward="true" selection-start-line="7" selection-start-column="21" selection-end-line="7" selection-end-column="21" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/csye6225/demo/entity/Task.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="252">
+          <caret line="14" column="23" lean-forward="false" selection-start-line="14" selection-start-column="17" selection-end-line="14" selection-end-column="23" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#508#509#0" expanded="true" />
+            <element signature="e#537#538#0" expanded="true" />
+            <element signature="e#579#580#0" expanded="true" />
+            <element signature="e#615#616#0" expanded="true" />
+            <element signature="e#646#647#0" expanded="true" />
+            <element signature="e#673#674#0" expanded="true" />
+            <element signature="e#713#714#0" expanded="true" />
+            <element signature="e#745#746#0" expanded="true" />
+            <element signature="e#775#776#0" expanded="true" />
+            <element signature="e#804#805#0" expanded="true" />
+            <element signature="e#845#846#0" expanded="true" />
+            <element signature="e#881#882#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/resources/application.properties">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="212">
+          <caret line="39" column="61" lean-forward="false" selection-start-line="39" selection-start-column="61" selection-end-line="39" selection-end-column="61" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/csye6225/demo/entity/AttachmentData.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-443">
+          <caret line="18" column="31" lean-forward="true" selection-start-line="18" selection-start-column="31" selection-end-line="18" selection-end-column="31" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#504#505#0" expanded="true" />
+            <element signature="e#535#536#0" expanded="true" />
+            <element signature="e#580#581#0" expanded="true" />
+            <element signature="e#620#621#0" expanded="true" />
+            <element signature="e#649#650#0" expanded="true" />
+            <element signature="e#676#677#0" expanded="true" />
+            <element signature="e#714#715#0" expanded="true" />
+            <element signature="e#746#747#0" expanded="true" />
+            <element signature="e#783#784#0" expanded="true" />
+            <element signature="e#816#817#0" expanded="true" />
+            <element signature="e#868#869#0" expanded="true" />
+            <element signature="e#912#913#0" expanded="true" />
+            <element signature="e#946#947#0" expanded="true" />
+            <element signature="e#976#977#0" expanded="true" />
+            <element signature="e#1022#1023#0" expanded="true" />
+            <element signature="e#1060#1061#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

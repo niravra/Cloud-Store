@@ -26,7 +26,6 @@
           <element id="library" level="project" name="Gradle: org.springframework.boot:spring-boot-starter-data-jpa:1.5.6.RELEASE" />
           <element id="library" level="project" name="Gradle: com.h2database:h2:1.4.196" />
           <element id="library" level="project" name="Gradle: org.apache.commons:commons-lang3:3.6" />
-          <element id="library" level="project" name="Gradle: com.google.guava:guava:23.0" />
           <element id="library" level="project" name="Gradle: org.apache.httpcomponents:httpclient:4.5.3" />
           <element id="library" level="project" name="Gradle: com.google.code.gson:gson:2.8.1" />
           <element id="library" level="project" name="Gradle: com.fasterxml.jackson.core:jackson-databind:2.7.5" />
@@ -90,6 +89,7 @@
           <element id="library" level="project" name="Gradle: org.slf4j:log4j-over-slf4j:1.7.25" />
           <element id="library" level="project" name="Gradle: org.apache.tomcat:tomcat-juli:8.5.16" />
           <element id="library" level="project" name="Gradle: ch.qos.logback:logback-core:1.1.11" />
+          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.google.guava/guava/23.1-jre/23ed5a005f9289062224ddbe0d398e732c5efc36/guava-23.1-jre.jar" />
         </element>
       </element>
     </root>
