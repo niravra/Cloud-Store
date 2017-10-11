@@ -97,6 +97,31 @@ public class HomeController {
   }
 
 
+  @RequestMapping(value = "/upload",method = RequestMethod.POST)
+  public String uploadSample(@RequestParam("taskId") Integer[] taskIds,
+                             @RequestParam("file") MultipartFile[] files) throws IOException {
+    System.out.println("entered post method");
+//    List<Attachmentdata> container = new ArrayList<Attachmentdata>();
+    System.out.println(name.length);
+    int i = 0;
+    for (MultipartFile multipartFile : files) {
+//      Attachmentdata p = new Attachmentdata();
+//      p.set(multipartFile.getBytes());
+//      p.setPhotoContent(multipartFile.getContentType());
+//      p.setAttachId(name[i]);
+      System.out.println(multipartFile.getOriginalFilename());
+      System.out.println(multipartFile.);
+//      i = i +1;
+//      container.add(p);
+    }
+//
+//    Response r = this.service.addPhotos(container);
+    return "test";
+
+
+  }
+
+
   @RequestMapping(value = "/user/find", method = RequestMethod.POST, produces = {"application/json"}
           , consumes = "application/json", headers = {"content-type=application/json; charset=utf-8"})
   @ResponseBody
@@ -120,3 +145,4 @@ public class HomeController {
 
   }
 }
+
