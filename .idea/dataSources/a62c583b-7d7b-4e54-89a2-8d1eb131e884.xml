@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataSource name="@localhost">
+  <database-model serializer="dbm" rdbms="MYSQL" format-version="4.4">
+    <root id="1"/>
+    <schema id="2" parent="1" name="assignment3">
+      <Current>1</Current>
+      <Visible>1</Visible>
+    </schema>
+    <schema id="3" parent="1" name="information_schema"/>
+    <schema id="4" parent="1" name="mysql"/>
+    <schema id="5" parent="1" name="performance_schema"/>
+    <schema id="6" parent="1" name="sample"/>
+    <schema id="7" parent="1" name="sys"/>
+    <schema id="8" parent="1" name="assignment5">
+      <Visible>1</Visible>
+    </schema>
+    <table id="9" parent="2" name="SPRING_SESSION"/>
+    <table id="10" parent="2" name="SPRING_SESSION_ATTRIBUTES"/>
+    <table id="11" parent="2" name="person"/>
+    <table id="12" parent="8" name="SPRING_SESSION"/>
+    <table id="13" parent="8" name="SPRING_SESSION_ATTRIBUTES"/>
+    <table id="14" parent="8" name="attachmentdata"/>
+    <table id="15" parent="8" name="person"/>
+    <table id="16" parent="8" name="task"/>
+    <column id="17" parent="9" name="SESSION_ID">
+      <Position>1</Position>
+      <DataType>char(36)|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="18" parent="9" name="CREATION_TIME">
+      <Position>2</Position>
+      <DataType>bigint(20)|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="19" parent="9" name="LAST_ACCESS_TIME">
+      <Position>3</Position>
+      <DataType>bigint(20)|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="20" parent="9" name="MAX_INACTIVE_INTERVAL">
+      <Position>4</Position>
+      <DataType>int(11)|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="21" parent="9" name="PRINCIPAL_NAME">
+      <Position>5</Position>
+      <DataType>varchar(100)|0</DataType>
+    </column>
+    <index id="22" parent="9" name="SPRING_SESSION_IX1">
+      <ColNames>LAST_ACCESS_TIME</ColNames>
+    </index>
+    <key id="23" parent="9" name="PRIMARY">
+      <NameSurrogate>1</NameSurrogate>
+      <ColNames>SESSION_ID</ColNames>
+      <Primary>1</Primary>
+    </key>
+    <column id="24" parent="10" name="SESSION_ID">
+      <Position>1</Position>
+      <DataType>char(36)|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="25" parent="10" name="ATTRIBUTE_NAME">
+      <Position>2</Position>
+      <DataType>varchar(200)|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="26" parent="10" name="ATTRIBUTE_BYTES">
+      <Position>3</Position>
+      <DataType>blob|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <index id="27" parent="10" name="SPRING_SESSION_ATTRIBUTES_IX1">
+      <ColNames>SESSION_ID</ColNames>
+    </index>
+    <key id="28" parent="10" name="PRIMARY">
+      <NameSurrogate>1</NameSurrogate>
+      <ColNames>SESSION_ID
+ATTRIBUTE_NAME</ColNames>
+      <Primary>1</Primary>
+    </key>
+    <foreign-key id="29" parent="10" name="SPRING_SESSION_ATTRIBUTES_FK">
+      <ColNames>SESSION_ID</ColNames>
+      <RefSchemaName>assignment3</RefSchemaName>
+      <RefTableName>SPRING_SESSION</RefTableName>
+      <RefColNames>SESSION_ID</RefColNames>
+      <OnDelete>cascade</OnDelete>
+    </foreign-key>
+    <column id="30" parent="11" name="userid">
+      <Position>1</Position>
+      <DataType>int(11)|0</DataType>
+      <NotNull>1</NotNull>
+      <SequenceIdentity>1</SequenceIdentity>
+    </column>
+    <column id="31" parent="11" name="email">
+      <Position>2</Position>
+      <DataType>varchar(255)|0</DataType>
+    </column>
+    <column id="32" parent="11" name="name">
+      <Position>3</Position>
+      <DataType>varchar(255)|0</DataType>
+    </column>
+    <column id="33" parent="11" name="password">
+      <Position>4</Position>
+      <DataType>varchar(255)|0</DataType>
+    </column>
+    <key id="34" parent="11" name="PRIMARY">
+      <NameSurrogate>1</NameSurrogate>
+      <ColNames>userid</ColNames>
+      <Primary>1</Primary>
+    </key>
+    <column id="35" parent="12" name="SESSION_ID">
+      <Position>1</Position>
+      <DataType>char(36)|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="36" parent="12" name="CREATION_TIME">
+      <Position>2</Position>
+      <DataType>bigint(20)|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="37" parent="12" name="LAST_ACCESS_TIME">
+      <Position>3</Position>
+      <DataType>bigint(20)|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="38" parent="12" name="MAX_INACTIVE_INTERVAL">
+      <Position>4</Position>
+      <DataType>int(11)|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="39" parent="12" name="PRINCIPAL_NAME">
+      <Position>5</Position>
+      <DataType>varchar(100)|0</DataType>
+    </column>
+    <index id="40" parent="12" name="SPRING_SESSION_IX1">
+      <ColNames>LAST_ACCESS_TIME</ColNames>
+    </index>
+    <key id="41" parent="12" name="PRIMARY">
+      <NameSurrogate>1</NameSurrogate>
+      <ColNames>SESSION_ID</ColNames>
+      <Primary>1</Primary>
+    </key>
+    <column id="42" parent="13" name="SESSION_ID">
+      <Position>1</Position>
+      <DataType>char(36)|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="43" parent="13" name="ATTRIBUTE_NAME">
+      <Position>2</Position>
+      <DataType>varchar(200)|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="44" parent="13" name="ATTRIBUTE_BYTES">
+      <Position>3</Position>
+      <DataType>blob|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <index id="45" parent="13" name="SPRING_SESSION_ATTRIBUTES_IX1">
+      <ColNames>SESSION_ID</ColNames>
+    </index>
+    <key id="46" parent="13" name="PRIMARY">
+      <NameSurrogate>1</NameSurrogate>
+      <ColNames>SESSION_ID
+ATTRIBUTE_NAME</ColNames>
+      <Primary>1</Primary>
+    </key>
+    <foreign-key id="47" parent="13" name="SPRING_SESSION_ATTRIBUTES_FK">
+      <ColNames>SESSION_ID</ColNames>
+      <RefSchemaName>assignment5</RefSchemaName>
+      <RefTableName>SPRING_SESSION</RefTableName>
+      <RefColNames>SESSION_ID</RefColNames>
+      <OnDelete>cascade</OnDelete>
+    </foreign-key>
+    <column id="48" parent="14" name="attachid">
+      <Position>1</Position>
+      <DataType>int(11)|0</DataType>
+      <NotNull>1</NotNull>
+      <SequenceIdentity>1</SequenceIdentity>
+    </column>
+    <column id="49" parent="14" name="attachments">
+      <Position>2</Position>
+      <DataType>longblob|0</DataType>
+    </column>
+    <column id="50" parent="14" name="content">
+      <Position>3</Position>
+      <DataType>varchar(255)|0</DataType>
+    </column>
+    <column id="51" parent="14" name="task_taskid">
+      <Position>4</Position>
+      <DataType>binary(255)|0</DataType>
+    </column>
+    <index id="52" parent="14" name="FKni8buecd1mitejenq6oav7rg3">
+      <ColNames>task_taskid</ColNames>
+    </index>
+    <key id="53" parent="14" name="PRIMARY">
+      <NameSurrogate>1</NameSurrogate>
+      <ColNames>attachid</ColNames>
+      <Primary>1</Primary>
+    </key>
+    <foreign-key id="54" parent="14" name="FKni8buecd1mitejenq6oav7rg3">
+      <ColNames>task_taskid</ColNames>
+      <RefSchemaName>assignment5</RefSchemaName>
+      <RefTableName>task</RefTableName>
+      <RefColNames>taskid</RefColNames>
+    </foreign-key>
+    <column id="55" parent="15" name="userid">
+      <Position>1</Position>
+      <DataType>int(11)|0</DataType>
+      <NotNull>1</NotNull>
+      <SequenceIdentity>1</SequenceIdentity>
+    </column>
+    <column id="56" parent="15" name="email">
+      <Position>2</Position>
+      <DataType>varchar(255)|0</DataType>
+    </column>
+    <column id="57" parent="15" name="name">
+      <Position>3</Position>
+      <DataType>varchar(255)|0</DataType>
+    </column>
+    <column id="58" parent="15" name="password">
+      <Position>4</Position>
+      <DataType>varchar(255)|0</DataType>
+    </column>
+    <key id="59" parent="15" name="PRIMARY">
+      <NameSurrogate>1</NameSurrogate>
+      <ColNames>userid</ColNames>
+      <Primary>1</Primary>
+    </key>
+    <column id="60" parent="16" name="taskid">
+      <Position>1</Position>
+      <DataType>binary(255)|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="61" parent="16" name="description">
+      <Position>2</Position>
+      <DataType>longtext|0</DataType>
+    </column>
+    <column id="62" parent="16" name="userid">
+      <Position>3</Position>
+      <DataType>int(11)|0</DataType>
+    </column>
+    <key id="63" parent="16" name="PRIMARY">
+      <NameSurrogate>1</NameSurrogate>
+      <ColNames>taskid</ColNames>
+      <Primary>1</Primary>
+    </key>
+  </database-model>
+</dataSource>
