@@ -4,6 +4,8 @@
     <bytecodeTargetLevel>
       <module name="csye6225-fall2017-1_main" target="1.8" />
       <module name="csye6225-fall2017-1_test" target="1.8" />
+      <module name="csye6225-fall2017_main" target="1.8" />
+      <module name="csye6225-fall2017_test" target="1.8" />
     </bytecodeTargetLevel>
   </component>
 </project>

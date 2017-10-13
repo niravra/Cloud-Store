@@ -17,7 +17,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -34,6 +36,13 @@ import java.util.List;
 
 @Controller
 public class HomeController {
+
+//  private final InMemoryUserDetailsManager inMemoryUserDetailsManager;
+//
+//  @Autowired
+//  public HomeController(InMemoryUserDetailsManager inMemoryUserDetailsManager) {
+//    this.inMemoryUserDetailsManager = inMemoryUserDetailsManager;
+//  }
 
   @Autowired
   private BCryptPasswordEncoder bCryptPasswordEncoder;
@@ -84,10 +93,12 @@ public class HomeController {
           , consumes = "application/json", headers = {"content-type=application/json; charset=utf-8"})
   @ResponseBody
   public String registerUser(@RequestBody Person person) {
+
     List<Person> personList = personDao.findByEmail(person.getEmail());
-    if (personList.size() > 0) {
+    List<Person> personListName = personDao.findByName(person.getName());
+    if (personList.size() > 0  || personListName.size() > 0) {
       JsonObject jsonObject = new JsonObject();
-      jsonObject.addProperty("message", "user email already exists");
+      jsonObject.addProperty("message", "user name/email already exists");
       return jsonObject.toString();
     } else {
       String encrypt = bCryptPasswordEncoder.encode(person.getPassword());
@@ -96,7 +107,7 @@ public class HomeController {
       p.setEmail(person.getEmail());
       p.setPassword(encrypt);
       personDao.save(p);
-
+     // inMemoryUserDetailsManager.createUser(User.withUsername(person.getName()).password(bCryptPasswordEncoder.encode(person.getPassword())).roles("USER").build());
       JsonObject jsonObject = new JsonObject();
       jsonObject.addProperty("message", "authorized and user saved");
       return jsonObject.toString();
@@ -139,6 +150,7 @@ public class HomeController {
 //    System.out.println("Email :" + person.getEmail());
 //    System.out.println("Password :" + person.getPassword());
 
+
     List<Person> personList = personDao.findByEmail(person.getEmail());
 
     if (personList.size() > 0) {
@@ -167,23 +179,23 @@ public class HomeController {
   }
 
 
-  @RequestMapping(value = "/tasks/{userId}", method = RequestMethod.POST, produces = {"application/json"}
-          , consumes = "application/json", headers = {"content-type=application/json; charset=utf-8"})
-  @ResponseBody
-  public String updateTask(@RequestParam("userId") Integer userId,@RequestBody Task task) {
-    JsonObject jsonObject = new JsonObject();
-    Task t = taskDao.findByuser(userId);
-    if (t == null)
-    {
-      jsonObject.addProperty("message", "Task cannot be updated as userId does not exist");
-      return jsonObject.toString();
-    }
-    t.setDesc(task.getDesc());
-    t.setUserId(userId);
-    taskDao.save(t);
-    jsonObject.addProperty("message", "Task updated");
-    return jsonObject.toString();
-
-  }
+//  @RequestMapping(value = "/tasks/{userId}", method = RequestMethod.POST, produces = {"application/json"}
+//          , consumes = "application/json", headers = {"content-type=application/json; charset=utf-8"})
+//  @ResponseBody
+//  public String updateTask(@RequestParam("userId") Integer userId,@RequestBody Task task) {
+//    JsonObject jsonObject = new JsonObject();
+////    Task t = taskDao.findByuser(userId);
+//    if (t == null)
+//    {
+//      jsonObject.addProperty("message", "Task cannot be updated as userId does not exist");
+//      return jsonObject.toString();
+//    }
+//    t.setDesc(task.getDesc());
+//    t.setUserId(userId);
+//    taskDao.save(t);
+//    jsonObject.addProperty("message", "Task updated");
+//    return jsonObject.toString();
+//
+//  }
 }
 

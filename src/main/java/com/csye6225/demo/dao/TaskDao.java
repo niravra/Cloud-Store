@@ -15,6 +15,6 @@ import java.util.List;
 
 public interface TaskDao extends CrudRepository<Task, Long>{
 
-    List<Task> findByuser(int userId);
+//    List<Task> findByuser(int userId);
 
 }

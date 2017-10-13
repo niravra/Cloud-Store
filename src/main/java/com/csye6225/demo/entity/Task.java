@@ -17,8 +17,9 @@ public class Task {
     @Column(length = 4096, name = "description")
     private String desc;
 
-    @Column(name = "userid")
-    private int userId;
+    @ManyToOne
+    @PrimaryKeyJoinColumn
+    private Person person;
 
     public UUID getTaskId() {
         return taskId;
@@ -36,11 +37,11 @@ public class Task {
         this.desc = desc;
     }
 
-    public int getUserId() {
-        return userId;
+    public Person getPerson() {
+        return person;
     }
 
-    public void setUserId(int userId) {
-        this.userId = userId;
+    public void setPerson(Person person) {
+        this.person = person;
     }
 }
