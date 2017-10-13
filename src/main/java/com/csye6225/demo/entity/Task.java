@@ -17,7 +17,7 @@ public class Task {
     @Column(length = 4096, name = "description")
     private String desc;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.MERGE)
     @PrimaryKeyJoinColumn
     private Person person;
 

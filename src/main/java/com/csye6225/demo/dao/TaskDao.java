@@ -10,11 +10,20 @@ package com.csye6225.demo.dao;
 import com.csye6225.demo.entity.Person;
 import org.springframework.data.repository.CrudRepository;
 import com.csye6225.demo.entity.Task;
+import org.springframework.data.repository.Repository;
 
 import java.util.List;
+import java.util.UUID;
 
-public interface TaskDao extends CrudRepository<Task, Long>{
+public interface TaskDao extends CrudRepository<Task, Long>, Repository<Task,Long> {
 
 //    List<Task> findByuser(int userId);
+    List<Task> findByPerson(Person person);
 
+    List<Task> findByTaskId(UUID taskId);
+
+    @Override
+    void delete(Task deleted);
+
+    Task save(Task persisted);
 }

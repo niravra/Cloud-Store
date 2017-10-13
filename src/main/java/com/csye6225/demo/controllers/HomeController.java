@@ -165,18 +165,7 @@ public class HomeController {
 
   }
 
-  @RequestMapping(value = "/tasks", method = RequestMethod.POST, produces = {"application/json"}
-          , consumes = "application/json", headers = {"content-type=application/json; charset=utf-8"})
-  @ResponseBody
-  public String registerTask(@RequestBody Task task) {
-    Task t = new Task();
-    t.setDesc(task.getDesc());
-    taskDao.save(t);
-    JsonObject jsonObject = new JsonObject();
-    jsonObject.addProperty("message", "Task created");
-    return jsonObject.toString();
 
-  }
 
 
 //  @RequestMapping(value = "/tasks/{userId}", method = RequestMethod.POST, produces = {"application/json"}

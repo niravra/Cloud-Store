@@ -1,5 +1,7 @@
 package com.csye6225.demo.entity;
 
+import org.hibernate.annotations.GenericGenerator;
+
 import javax.persistence.*;
 import java.util.UUID;
 
@@ -7,27 +9,38 @@ import java.util.UUID;
 @Table(name = "attachmentdata")
 public class AttachmentData {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "attachid")
-    private int attachId;
 
-    @ManyToOne
+    @Id
+    @GeneratedValue(generator = "uuid2")
+    @GenericGenerator(name = "uuid2", strategy = "uuid2")
+    @Column(name = "attachid")
+    private UUID attachId;
+
+    @ManyToOne(cascade = CascadeType.MERGE)
     @PrimaryKeyJoinColumn
     private Task task;
 
+
+    public byte[] getAttachName() {
+        return attachName;
+    }
+
+    public void setAttachName(byte[] attachName) {
+        this.attachName = attachName;
+    }
+
     @Column(name = "attachments")
     @Lob
-    private Byte[] attachName;
+    private byte[] attachName;
 
     @Column(name = "content")
     private String content;
 
-    public int getAttachId() {
+    public UUID getAttachId() {
         return attachId;
     }
 
-    public void setAttachId(int attachId) {
+    public void setAttachId(UUID attachId) {
         this.attachId = attachId;
     }
 
@@ -39,13 +52,7 @@ public class AttachmentData {
         this.task = task;
     }
 
-    public Byte[] getAttachName() {
-        return attachName;
-    }
 
-    public void setAttachName(Byte[] attachName) {
-        this.attachName = attachName;
-    }
 
     public String getContent() {
         return content;
