@@ -1,6 +1,7 @@
 package com.csye6225.demo.entity;
 
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.util.UUID;
@@ -11,13 +12,14 @@ public class Task {
     @Id
     @GeneratedValue(generator = "uuid2")
     @GenericGenerator(name = "uuid2", strategy = "uuid2")
+    @Type(type = "uuid-char")
     @Column(name = "taskid")
     private UUID taskId;
 
     @Column(length = 4096, name = "description")
     private String desc;
 
-    @ManyToOne(cascade = CascadeType.MERGE)
+    @ManyToOne(cascade = CascadeType.ALL)
     @PrimaryKeyJoinColumn
     private Person person;
 

@@ -36,6 +36,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.persistence.Id;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.lang.reflect.Array;
@@ -156,6 +157,12 @@ public class TaskController {
 
         if (auth) {
 
+            List<Task> check = taskDao.findByTaskId(UUID.fromString(id));
+
+            if (check.size() > 0 )
+                System.out.println("hahahahahhahahahahha");
+
+
             List<Person> p = personDao.findByName(headValue[0]);
 
             List<Task> taskList = taskDao.findByPerson(p.get(0));
@@ -165,7 +172,7 @@ public class TaskController {
                 if (t1.getTaskId().toString().equals(id)){
                     System.out.println("IT entered hereeeeeee");
                     t1.setDesc(task.getDesc());
-//                    t1.setPerson(p.get(0));
+                    t1.setPerson(p.get(0));
                     taskDao.save(t1);
                     jsonObject.addProperty("id", String.valueOf(t1.getTaskId()));
                     jsonObject.addProperty("description", t1.getDesc());
@@ -291,6 +298,8 @@ public class TaskController {
             List<Task> tlist = taskDao.findByTaskId(UUID.fromString(id));
             System.out.println(tlist.size());
             if (tlist.size() > 0) {
+                System.out.println(files.getOriginalFilename());
+                System.out.println(files.getBytes() );
                 AttachmentData ad = new AttachmentData();
                 ad.setAttachName(files.getBytes());
                 ad.setContent(files.getContentType());
