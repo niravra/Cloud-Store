@@ -6,6 +6,7 @@ package com.csye6225.demo.controllers;
  * <Ashwini Thaokar>, <001282202>, <thaokar.a@husky.neu.edu>
  **/
 
+import java.io.File;
 import java.io.IOException;
 
 import com.csye6225.demo.dao.AttachmentDao;
@@ -41,10 +42,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.lang.reflect.Array;
 import java.nio.charset.Charset;
-import java.util.Base64;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Controller
 public class TaskController {
@@ -168,9 +166,7 @@ public class TaskController {
             List<Task> taskList = taskDao.findByPerson(p.get(0));
             for (Task t1 : taskList) {
                 System.out.println( "The ID from request is  : " +id);
-                System.out.println("The ID inside the method is " +t1.getTaskId());
                 if (t1.getTaskId().toString().equals(id)){
-                    System.out.println("IT entered hereeeeeee");
                     t1.setDesc(task.getDesc());
                     t1.setPerson(p.get(0));
                     taskDao.save(t1);
@@ -194,9 +190,9 @@ public class TaskController {
     }
 
     @RequestMapping(value = "/tasks/{id}", method = RequestMethod.DELETE, produces = {"application/json"}
-            , consumes = "application/json", headers = {"content-type=application/json; charset=utf-8"})
+            , headers = {"content-type=application/json; charset=utf-8"})
     @ResponseBody
-    public String DeleteTask(@PathVariable("id") String id, @RequestBody Task task, HttpServletRequest httpRequest, HttpServletResponse response) {
+    public String DeleteTask(@PathVariable("id") String id, HttpServletRequest httpRequest, HttpServletResponse response) {
         JsonObject jsonObject = new JsonObject();
         JsonArray jsonArray = new JsonArray();
         String[] headValue = HeaderCheck(httpRequest);
@@ -243,7 +239,7 @@ public class TaskController {
 
 
     public boolean checkAuth(String username, String password) {
-
+        if (username == null  || password == null) return false;
         String encrypt = bCryptPasswordEncoder.encode(password);
         List<Person> personList = personDao.findByName(username);
         if (personList.size() > 0) {
@@ -275,10 +271,10 @@ public class TaskController {
 
 
 
-    @RequestMapping(value = "/tasks/{id}", method = RequestMethod.POST, produces = {"application/json"}
+    @RequestMapping(value = "/tasks/{id}/attachments", method = RequestMethod.POST, produces = {"application/json"}
             )
     @ResponseBody
-    public String AddAttachment(@PathVariable("id") String id, @PathVariable("file") MultipartFile files, HttpServletRequest httpRequest, HttpServletResponse response) throws IOException {
+    public String AddAttachment(@PathVariable("id") String id, @RequestParam("file")MultipartFile files, HttpServletRequest httpRequest, HttpServletResponse response) throws IOException {
         JsonObject jsonObject = new JsonObject();
         JsonArray jsonArray = new JsonArray();
         String[] headValue = HeaderCheck(httpRequest);
@@ -298,12 +294,14 @@ public class TaskController {
             List<Task> tlist = taskDao.findByTaskId(UUID.fromString(id));
             System.out.println(tlist.size());
             if (tlist.size() > 0) {
-                System.out.println(files.getOriginalFilename());
-                System.out.println(files.getBytes() );
+                String name = "/home/sumedh/assignment5/code1/" + files.getOriginalFilename();
+                //String filepath = System.getProperty("user.dir");
+               // filepath.concat(name);
+                files.transferTo(new File(name));
                 AttachmentData ad = new AttachmentData();
-                ad.setAttachName(files.getBytes());
                 ad.setContent(files.getContentType());
                 Task task = tlist.get(0);
+
                 ad.setTask(task);
 
                 attachmentDao.save(ad);
@@ -337,5 +335,132 @@ public class TaskController {
         }
 
     }
+
+
+    @RequestMapping(value = "/tasks/{id}/attachments", method = RequestMethod.GET, produces = {"application/json"}
+    )
+    @ResponseBody
+    public String getAttachments(@PathVariable("id") String id,HttpServletRequest httpRequest, HttpServletResponse response) throws IOException {
+        JsonObject jsonObject = new JsonObject();
+        JsonArray jsonArray = new JsonArray();
+        String[] headValue = HeaderCheck(httpRequest);
+        boolean auth = false;
+        boolean taskChecker = false;
+
+        if (headValue == null) {
+            response.setStatus(401, "Unauthorized");
+            jsonObject.addProperty("Response code", "The Basic Auth is not provided");
+            return jsonObject.toString();
+        } else
+            auth = checkAuth(headValue[0], headValue[1]);
+
+
+        if (auth) {
+            System.out.println(UUID.fromString(id));
+            List<Task> tlist = taskDao.findByTaskId(UUID.fromString(id));
+            System.out.println(tlist.size());
+            if (tlist.size() > 0) {
+
+                List<Task> tlist1 = taskDao.findByTaskId(UUID.fromString(id));
+                List<AttachmentData> ads = attachmentDao.findByTask(tlist1.get(0));
+                for (AttachmentData tk : ads) {
+                    JsonObject jobj = new JsonObject();
+
+                    jobj.addProperty("id", String.valueOf(tk.getAttachId()));
+                    jobj.addProperty("url", tk.getContent());
+                    jsonArray.add(jobj);
+                }
+
+                return jsonArray.toString();
+
+
+            } else {
+
+                response.setStatus(401, "Unauthorized");
+                jsonObject.addProperty("message", "No attachments found");
+                return jsonObject.toString();
+
+            }
+
+
+        } else {
+            response.setStatus(401, "Unauthorized");
+            jsonObject.addProperty("message", "Authorized User Not Found");
+            return jsonObject.toString();
+
+        }
+
+    }
+
+    @RequestMapping(value = "/tasks/{taskId}/attachments/{attachementId}", method = RequestMethod.DELETE, produces = {"application/json"}
+    )
+    @ResponseBody
+    public String deleteAttachment(@PathVariable("taskId") String taskId,@PathVariable("attachementId") String attachementId,
+                                   HttpServletRequest httpRequest, HttpServletResponse response) throws IOException {
+        JsonObject jsonObject = new JsonObject();
+        JsonArray jsonArray = new JsonArray();
+        String[] headValue = HeaderCheck(httpRequest);
+        boolean auth = false;
+        boolean taskChecker = false;
+        List<AttachmentData> alist = new ArrayList<AttachmentData>();
+        List<Task> tlist = new ArrayList<Task>();
+
+        if (headValue == null) {
+            response.setStatus(401, "Unauthorized");
+            jsonObject.addProperty("Response code", "The Basic Auth is not provided");
+            return jsonObject.toString();
+        } else
+            auth = checkAuth(headValue[0], headValue[1]);
+
+
+        if (auth) {
+            System.out.println(UUID.fromString(taskId));
+            //alist = attachmentDao.findByAttachId(UUID.fromString(attachementId));
+            tlist = taskDao.findByTaskId(UUID.fromString(taskId));
+            System.out.println(alist.size());
+            if (tlist.size() > 0) {
+
+                //List<Task> tlist1 = taskDao.findByTaskId(UUID.fromString(id));
+                List<AttachmentData> ads = attachmentDao.findByAttachId(UUID.fromString(attachementId));
+
+                if(ads.size() > 0) {
+                   // for (AttachmentData tk : ads) {
+
+                        attachmentDao.delete(ads.get(0));
+                        JsonObject jobj = new JsonObject();
+
+                        jobj.addProperty("id", String.valueOf(ads.get(0).getAttachId()));
+                        jobj.addProperty("url", ads.get(0).getContent());
+                        jsonArray.add(jobj);
+                   // }
+                }
+                else {
+
+                    response.setStatus(201, "Unauthorized");
+                    jsonObject.addProperty("message", "No attachments found for the given taskId");
+
+                }
+
+                return jsonArray.toString();
+
+
+            } else {
+
+                response.setStatus(201, "Unauthorized");
+                jsonObject.addProperty("message", "No tasks found");
+                return jsonObject.toString();
+
+            }
+
+
+        } else {
+            response.setStatus(401, "Unauthorized");
+            jsonObject.addProperty("message", "Authorized User Not Found");
+            return jsonObject.toString();
+
+        }
+
+    }
+
 
 }

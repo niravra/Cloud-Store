@@ -1,6 +1,9 @@
 package com.csye6225.demo.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.util.UUID;
@@ -13,25 +16,14 @@ public class AttachmentData {
     @Id
     @GeneratedValue(generator = "uuid2")
     @GenericGenerator(name = "uuid2", strategy = "uuid2")
+    @Type(type = "uuid-char")
     @Column(name = "attachid")
     private UUID attachId;
 
-    @ManyToOne(cascade = CascadeType.MERGE)
+    @ManyToOne(cascade = CascadeType.ALL)
     @PrimaryKeyJoinColumn
+    @JsonBackReference
     private Task task;
-
-
-    public byte[] getAttachName() {
-        return attachName;
-    }
-
-    public void setAttachName(byte[] attachName) {
-        this.attachName = attachName;
-    }
-
-    @Column(name = "attachments")
-    @Lob
-    private byte[] attachName;
 
     @Column(name = "content")
     private String content;
@@ -51,8 +43,6 @@ public class AttachmentData {
     public void setTask(Task task) {
         this.task = task;
     }
-
-
 
     public String getContent() {
         return content;

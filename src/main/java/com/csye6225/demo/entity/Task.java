@@ -1,9 +1,11 @@
 package com.csye6225.demo.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
+import java.awt.*;
 import java.util.UUID;
 
 @Entity
