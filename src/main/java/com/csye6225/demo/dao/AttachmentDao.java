@@ -7,8 +7,16 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.core.CrudMethods;
 
 import java.util.List;
+import java.util.UUID;
 
 public interface AttachmentDao extends CrudRepository<AttachmentData,Long> {
 
       List<AttachmentData> findByTask(Task task);
+
+      List<AttachmentData> findByAttachId(UUID attachId);
+
+      @Override
+      void delete(AttachmentData deleted);
+
+      AttachmentData save(AttachmentData persisted);
 }
