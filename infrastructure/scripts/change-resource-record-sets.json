@@ -4,12 +4,12 @@
     {
       "Action": "UPSERT",
       "ResourceRecordSet": {
-        "Name": "csye6225-fall2017-thaokara.me",
+        "Name": "csye6225-fall2017-sarafs.me",
         "Type": "A",
         "TTL": 60,
         "ResourceRecords": [
           {
-            "Value": "34.201.106.255"
+            "Value": "54.152.200.111"
           }
         ]
       }
