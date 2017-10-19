@@ -266,11 +266,14 @@ public class TaskController {
         String encrypt = bCryptPasswordEncoder.encode(password);
         List<Person> personList = personDao.findByName(username);
         if (personList.size() > 0) {
+
+            // for Bcrypt password from normal header
 //            if (bCryptPasswordEncoder.matches(password, personList.get(0).getPassword())) {
 //                return true;
 //            } else
 //                return false;
 
+            // for Jmeter
             if (password.equals(personList.get(0).getPassword())) {
                 return true;
             } else
