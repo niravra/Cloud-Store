@@ -15,5 +15,9 @@ import java.util.List;
 public interface PersonDao extends CrudRepository<Person, Long>{
 
     List<Person> findByEmail(String email);
+    List<Person> findByName(String name);
+
+    List<Person> findByNameAndAndPassword(String name, String password);
+
 
 }
