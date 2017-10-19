@@ -1,15 +1,19 @@
 package com.csye6225.demo.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import org.hibernate.action.internal.OrphanRemovalAction;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.hibernate.annotations.Type;
-
 import javax.persistence.*;
 import java.awt.*;
 import java.util.UUID;
 
 @Entity
 @Table(name = "task")
+@OnDelete(action=OnDeleteAction.CASCADE)
 public class Task {
     @Id
     @GeneratedValue(generator = "uuid2")
@@ -21,8 +25,9 @@ public class Task {
     @Column(length = 4096, name = "description")
     private String desc;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @PrimaryKeyJoinColumn
+    @org.hibernate.annotations.ForeignKey(name="none")
     private Person person;
 
     public UUID getTaskId() {

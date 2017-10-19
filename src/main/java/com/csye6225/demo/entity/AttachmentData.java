@@ -2,10 +2,12 @@ package com.csye6225.demo.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.Type;
+import org.hibernate.annotations.*;
+import org.hibernate.annotations.CascadeType;
 
 import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import java.util.UUID;
 
 @Entity
@@ -20,9 +22,10 @@ public class AttachmentData {
     @Column(name = "attachid")
     private UUID attachId;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
+    @Cascade({CascadeType.REMOVE})
+    @org.hibernate.annotations.ForeignKey(name="none")
     @PrimaryKeyJoinColumn
-    @JsonBackReference
     private Task task;
 
     @Column(name = "content")

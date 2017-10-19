@@ -7,6 +7,7 @@ package com.csye6225.demo.dao;
  * <Ashwini Thaokar>, <001282202>, <thaokar.a@husky.neu.edu>
  **/
 
+import com.csye6225.demo.entity.AttachmentData;
 import com.csye6225.demo.entity.Person;
 import org.springframework.data.repository.CrudRepository;
 import com.csye6225.demo.entity.Task;
@@ -21,6 +22,7 @@ public interface TaskDao extends CrudRepository<Task, Long>, Repository<Task,Lon
     List<Task> findByPerson(Person person);
 
     List<Task> findByTaskId(UUID taskId);
+
 
     @Override
     void delete(Task deleted);
