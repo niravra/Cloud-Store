@@ -260,6 +260,11 @@ public class TaskController {
             } else
                 return false;
 
+//            if ((password.equals(personList.get(0).getPassword()))) {
+//                return true;
+//            } else
+//                return false;
+
         } else
             return false;
     }
@@ -306,7 +311,7 @@ public class TaskController {
             List<Task> tlist = taskDao.findByTaskId(UUID.fromString(id));
             System.out.println(tlist.size());
             if (tlist.size() > 0) {
-                String name = "/home/sumedh/assignment5/code1/" + files.getOriginalFilename();
+                String name = "/home/parakh42/cloudfiledatabase/" + files.getOriginalFilename();
                 //String filepath = System.getProperty("user.dir");
                // filepath.concat(name);
                 files.transferTo(new File(name));
