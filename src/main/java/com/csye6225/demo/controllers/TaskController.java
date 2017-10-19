@@ -266,7 +266,12 @@ public class TaskController {
         String encrypt = bCryptPasswordEncoder.encode(password);
         List<Person> personList = personDao.findByName(username);
         if (personList.size() > 0) {
-            if (bCryptPasswordEncoder.matches(password, personList.get(0).getPassword())) {
+//            if (bCryptPasswordEncoder.matches(password, personList.get(0).getPassword())) {
+//                return true;
+//            } else
+//                return false;
+
+            if (password.equals(personList.get(0).getPassword())) {
                 return true;
             } else
                 return false;
