@@ -69,8 +69,8 @@ public class TaskController {
 
     @RequestMapping(value = "/tasks", method = RequestMethod.GET, produces = {"application/json"})
     @ResponseBody
-    public String registerTask(HttpServletRequest httpRequest) {
-
+    public String registerTask(HttpServletRequest httpRequest,HttpServletResponse response) {
+        JsonArray jsonArray = new JsonArray();
         JsonObject jsonObject = new JsonObject();
         String[] headValue = HeaderCheck(httpRequest);
         boolean auth = checkAuth(headValue[0], headValue[1]);
@@ -82,10 +82,23 @@ public class TaskController {
 
 
         if (auth) {
-            jsonObject.addProperty("message", "Task created");
-            return jsonObject.toString();
+            Task t = new Task();
+
+
+            List<Person> p = personDao.findByName(headValue[0]);
+            t.setPerson(p.get(0));
+            List<Task> taskList = taskDao.findByPerson(p.get(0));
+            for (Task t1 : taskList) {
+                JsonObject jobj = new JsonObject();
+
+                jobj.addProperty("id", String.valueOf(t1.getTaskId()));
+                jobj.addProperty("description", t1.getDesc());
+                jsonArray.add(jobj);
+            }
+            response.setStatus(201, "OK");
+            return jsonArray.toString();
         } else {
-            jsonObject.addProperty("message", "Not Authorized User Not Found");
+            jsonObject.addProperty("message", "Authorized User Not Found");
             return jsonObject.toString();
         }
 
@@ -129,7 +142,7 @@ public class TaskController {
             return jsonArray.toString();
         } else {
             response.setStatus(401, "Unauthorized");
-            jsonObject.addProperty("message", "Not Authorized User Not Found");
+            jsonObject.addProperty("message", "Authorized User Not Found");
             return jsonObject.toString();
         }
 
@@ -156,11 +169,6 @@ public class TaskController {
         if (auth) {
 
             List<Task> check = taskDao.findByTaskId(UUID.fromString(id));
-
-            if (check.size() > 0 )
-                System.out.println("hahahahahhahahahahha");
-
-
             List<Person> p = personDao.findByName(headValue[0]);
 
             List<Task> taskList = taskDao.findByPerson(p.get(0));
@@ -220,14 +228,17 @@ public class TaskController {
 
                     List<AttachmentData> yy = attachmentDao.findAttachmentDataByTask(t1);
 
-                    //for (AttachmentData a:yy
-                      //   ) {
+                    for (AttachmentData a:yy)
+                       {
 
-                       // deleteAttachment(String.valueOf(t1.getTaskId()), String.valueOf(a.getAttachId()),
-                       //         httpRequest, response);
+                           File f = new File(a.getContent());
+                           f.delete();
+
+
+                       }
 
                         attachmentDao.delete(yy);
-                  //  }
+
 
                     taskDao.delete(t1);
                     jsonObject.addProperty("message", "deleted");
@@ -260,11 +271,6 @@ public class TaskController {
             } else
                 return false;
 
-//            if ((password.equals(personList.get(0).getPassword()))) {
-//                return true;
-//            } else
-//                return false;
-
         } else
             return false;
     }
@@ -291,7 +297,10 @@ public class TaskController {
     @RequestMapping(value = "/tasks/{id}/attachments", method = RequestMethod.POST, produces = {"application/json"}
             )
     @ResponseBody
-    public String AddAttachment(@PathVariable("id") String id, @RequestParam("file")MultipartFile files, HttpServletRequest httpRequest, HttpServletResponse response) throws IOException {
+    public String AddAttachment(@PathVariable("id") String id, @RequestParam("file")MultipartFile files,
+                                @RequestParam("file_Path") String file_Path,
+                                HttpServletRequest httpRequest, HttpServletResponse response)
+            throws IOException {
         JsonObject jsonObject = new JsonObject();
         JsonArray jsonArray = new JsonArray();
         String[] headValue = HeaderCheck(httpRequest);
@@ -311,12 +320,12 @@ public class TaskController {
             List<Task> tlist = taskDao.findByTaskId(UUID.fromString(id));
             System.out.println(tlist.size());
             if (tlist.size() > 0) {
-                String name = "/home/parakh42/cloudfiledatabase/" + files.getOriginalFilename();
+                //String name = "/home/sumedh/assignment5/code1/" + files.getOriginalFilename();
                 //String filepath = System.getProperty("user.dir");
                // filepath.concat(name);
-                files.transferTo(new File(name));
+                files.transferTo(new File(file_Path));
                 AttachmentData ad = new AttachmentData();
-                ad.setContent(files.getContentType());
+                ad.setContent(file_Path);
                 Task task = tlist.get(0);
 
                 ad.setTask(task);
@@ -446,6 +455,8 @@ public class TaskController {
                         nn.setContent(ads.get(0).getContent());
                         nn.setAttachId(ads.get(0).getAttachId());
                         attachmentDao.delete(nn);
+                        File file = new File(nn.getContent());
+                        file.delete();
                         JsonObject jobj = new JsonObject();
 
                         jobj.addProperty("id", String.valueOf(ads.get(0).getAttachId()));
