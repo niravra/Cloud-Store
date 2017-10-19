@@ -192,7 +192,7 @@ public class TaskController {
     @RequestMapping(value = "/tasks/{id}", method = RequestMethod.DELETE, produces = {"application/json"}
             , headers = {"content-type=application/json; charset=utf-8"})
     @ResponseBody
-    public String DeleteTask(@PathVariable("id") String id, HttpServletRequest httpRequest, HttpServletResponse response) {
+    public String DeleteTask(@PathVariable("id") String id, HttpServletRequest httpRequest, HttpServletResponse response) throws IOException {
         JsonObject jsonObject = new JsonObject();
         JsonArray jsonArray = new JsonArray();
         String[] headValue = HeaderCheck(httpRequest);
@@ -215,7 +215,19 @@ public class TaskController {
             for (Task t1 : taskList) {
                 System.out.println( "The ID from request is  : " +id);
                 System.out.println("The ID inside the method is " +t1.getTaskId());
+
                 if (t1.getTaskId().toString().equals(id)){
+
+                    List<AttachmentData> yy = attachmentDao.findAttachmentDataByTask(t1);
+
+                    //for (AttachmentData a:yy
+                      //   ) {
+
+                       // deleteAttachment(String.valueOf(t1.getTaskId()), String.valueOf(a.getAttachId()),
+                       //         httpRequest, response);
+
+                        attachmentDao.delete(yy);
+                  //  }
 
                     taskDao.delete(t1);
                     jsonObject.addProperty("message", "deleted");
@@ -425,8 +437,10 @@ public class TaskController {
 
                 if(ads.size() > 0) {
                    // for (AttachmentData tk : ads) {
-
-                        attachmentDao.delete(ads.get(0));
+                    AttachmentData nn = new AttachmentData();
+                        nn.setContent(ads.get(0).getContent());
+                        nn.setAttachId(ads.get(0).getAttachId());
+                        attachmentDao.delete(nn);
                         JsonObject jobj = new JsonObject();
 
                         jobj.addProperty("id", String.valueOf(ads.get(0).getAttachId()));
