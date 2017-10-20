@@ -15,8 +15,9 @@ public interface AttachmentDao extends CrudRepository<AttachmentData,Long> {
 
       List<AttachmentData> findByAttachId(UUID attachId);
 
-      @Override
-      void delete(AttachmentData deleted);
+      List<AttachmentData> findAttachmentDataByTask(Task task);
+      //@Override
+      //void delete(AttachmentData deleted);
 
-      AttachmentData save(AttachmentData persisted);
+      //AttachmentData save(AttachmentData persisted);
 }
