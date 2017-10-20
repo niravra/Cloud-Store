@@ -40,9 +40,7 @@ deploy:
      skip_cleanup: true
 
 
-
-
 notifications:
   email:
     recipients:
-      - kar.n@husky.neu.edu
+      - saraf.s@husky.neu.edu
