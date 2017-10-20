@@ -22,7 +22,7 @@ after_success:
   - mv -r myapp-${TRAVIS_JOB_NUMBER}.zip codedeploy
   - ls -al
   - pwd
-  - cd codedeploy
+  - cd codeploy
   - ls -al
   - pwd
 
