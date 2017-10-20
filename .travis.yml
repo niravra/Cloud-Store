@@ -21,10 +21,10 @@ after_success:
   - zip -r myapp-${TRAVIS_JOB_NUMBER}.zip build/libs/ROOT.war appspec.yml
   - mv -r myapp-${TRAVIS_JOB_NUMBER}.zip codedeploy
   - ls -al
-  -pwd
-  -cd codedeploy
-  -ls -al
-  -pwd
+  - pwd
+  - cd codedeploy
+  - ls -al
+  - pwd
 
 before_deploy:
   - cd ..
