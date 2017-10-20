@@ -28,6 +28,7 @@ after_success:
 before_deploy:
   - cd ..
 
+
 deploy:
   - provider: s3
     access_key_id: AKIAI2CA26RU7CW2X4VQ
