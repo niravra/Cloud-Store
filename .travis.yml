@@ -20,6 +20,8 @@ after_success:
   - mkdir codedeploy
   - zip -r CSYE6225Project-${TRAVIS_JOB_NUMBER}.zip build/libs/ROOT.war appspec.yml
   - ls -al
+  - mv CSYE6225Project-${TRAVIS_JOB_NUMBER}.zip codedeploy/
+  - ls -al
   - pwd
   - cd codedeploy
   - ls -al
