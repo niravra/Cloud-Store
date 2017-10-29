@@ -1,0 +1,18 @@
+{
+  "Comment": "Resource Record Set",
+  "Changes": [
+    {
+      "Action": "UPSERT",
+      "ResourceRecordSet": {
+        "Name": "csye6225-fall2017-thaokara.me",
+        "Type": "A",
+        "TTL": 60,
+        "ResourceRecords": [
+          {
+            "Value": "54.209.209.210"
+          }
+        ]
+      }
+    }
+  ]
+}
