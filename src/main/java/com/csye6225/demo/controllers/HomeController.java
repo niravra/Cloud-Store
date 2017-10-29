@@ -6,14 +6,31 @@ package com.csye6225.demo.controllers;
  * <Ashwini Thaokar>, <001282202>, <thaokar.a@husky.neu.edu>
  **/
 import java.io.IOException;
+
+
+import com.amazonaws.auth.AWSCredentials;
+import com.amazonaws.auth.AWSCredentialsProvider;
+import com.amazonaws.auth.AWSStaticCredentialsProvider;
+import com.amazonaws.auth.BasicAWSCredentials;
+import com.amazonaws.regions.Regions;
+import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
+import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
+
+import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
+import com.amazonaws.services.dynamodbv2.model.CreateTableRequest;
+import com.amazonaws.services.dynamodbv2.model.ProvisionedThroughput;
 import com.csye6225.demo.dao.PersonDao;
 import com.csye6225.demo.dao.TaskDao;
+import com.csye6225.demo.entity.Customer;
 import com.csye6225.demo.entity.Person;
+import com.csye6225.demo.entity.ProductInfo;
 import com.csye6225.demo.entity.Task;
 import com.google.gson.JsonObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -44,6 +61,21 @@ public class HomeController {
 //    this.inMemoryUserDetailsManager = inMemoryUserDetailsManager;
 //  }
 
+  private DynamoDBMapper dynamoDBMapper;
+
+
+  @Value("${amazon.aws.accesskey}")
+  private String amazonAWSAccessKey;
+  @Value("${amazon.aws.secretkey}")
+  private String amazonAWSSecretKey;
+
+
+  @Autowired
+  private AmazonDynamoDB amazonDynamoDB;
+
+  @Autowired
+  private AWSCredentials awsCredentials;
+
   @Autowired
   private BCryptPasswordEncoder bCryptPasswordEncoder;
 
@@ -61,6 +93,7 @@ public class HomeController {
   @ResponseBody
   public String welcome() {
 
+//    dynamoCreation();
     JsonObject jsonObject = new JsonObject();
 
     if (SecurityContextHolder.getContext().getAuthentication() != null
@@ -70,6 +103,33 @@ public class HomeController {
       jsonObject.addProperty("message", "you are logged in. current time is " + new Date().toString());
     }
 
+    return jsonObject.toString();
+  }
+
+  @RequestMapping(value = "/dynamo", method = RequestMethod.POST, produces = "application/json")
+  @ResponseBody
+  public String dynamoAdd() {
+
+//    dynamoCreation();
+
+    BasicAWSCredentials awsCreds = new BasicAWSCredentials(amazonAWSAccessKey, amazonAWSSecretKey);
+    AmazonDynamoDB client = AmazonDynamoDBClientBuilder.standard().withCredentials(new AWSStaticCredentialsProvider(awsCreds)).withRegion(Regions.US_EAST_1).build();
+
+
+    DynamoDBMapper mapper = new DynamoDBMapper(client);
+
+    ProductInfo c = new ProductInfo();
+    c.setId(String.valueOf(100));
+    c.setCost("1000");
+    c.setMsrp("1250");
+
+
+    mapper.save(c);
+
+    JsonObject jsonObject = new JsonObject();
+
+
+    jsonObject.addProperty("message", "dynamo item created");
     return jsonObject.toString();
   }
 
@@ -186,5 +246,19 @@ public class HomeController {
 //    return jsonObject.toString();
 //
 //  }
+  public void dynamoCreation(){
+
+//    AmazonDynamoDB client = AmazonDynamoDBClientBuilder;
+    dynamoDBMapper = new DynamoDBMapper(amazonDynamoDB);
+
+    System.out.println("THE AMA IS :     " +amazonDynamoDB);
+
+
+    CreateTableRequest tableRequest = dynamoDBMapper
+            .generateCreateTableRequest(Customer.class);
+    tableRequest.setProvisionedThroughput(
+            new ProvisionedThroughput(1L, 1L));
+    amazonDynamoDB.createTable(tableRequest);
+  }
 }
 
