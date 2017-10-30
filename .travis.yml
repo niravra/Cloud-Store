@@ -14,7 +14,30 @@ sudo: false
 install: true
 
 script:
-  - ./gradlew war
+  - ./gradlew build
+
+after_success:
+  - mkdir codedeploy
+  - zip -r myapp-${TRAVIS_JOB_NUMBER}.zip build/libs/ROOT.war appspec.yml
+  - mv -r myapp-${TRAVIS_JOB_NUMBER}.zip codedeploy
+  - ls -al
+  - pwd
+  - cd codedeploy
+  - ls -al
+  - pwd
+
+before_deploy:
+  - cd ..
+
+deploy:
+  - provider: s3
+    access_key_id: AKIAJAOB2INYLKYO4LTA
+    secret_access_key:
+     secure: ldjcUYwzKwwJw5USkPxx8UBj9qB6sqDpA2zDB5DzeJTZCDpwkjUVz7tscjeMX2XN1ON0p7aRGcECEQUidfL0Ty2Z2g1SJ0MUtGm+3IaIuZPiQfxCc9g9+qXKGa9EqwWu5PKy9uw/MqR1QLTmoaMfrvz2BwMwON9gUIKgshhlDPq3k7TLR8gIDnAk/UTwWd7QPLD+lHUESOVOydo2wXCSeRcrdtDAv+f7cggoR1DyTzu0Dt2QuIWcHgwkhjCTpBzfmfR9kYnjMkSeBZa+sj30l24MLU4jrM4hAqc9wN6FXuDHUplUTV7tZW+8x6IdgfPA5gTr/nt9qrReGH38NS87TckK7PunvjgjTj73Gv7mm/e75msVoPsypkmwA1rlQQDBkJaFTcK7cCA0sV7cla5ccNMsr1qdsG7/GdohXq/6uDlocyl4R32geEYd1uSPpp9TbXP0pv5/FkoltcDilKjoPZiSF5Z/MTmhyJbm5QHoWkoD/Sf1cKVqajKNwZXBQvVXno8sRQtsiHfJYi7dMJZzKVHbU843qhE+lZ1cGp3jdxqd3Bu+nbJt3PonDqZhD/GRlDuGrnfEw7cfjc8vi8nyEurbILf6L/vPadWDLP5KJEQXyXVST4IaKVYzicsvpAS5+hJlpEdeeosRS0LOwSAGoIbvFKehe9yCz0Q7oWbp25U=
+    local_dir: codedeploy
+    bucket: team_four_finals
+    region: us-east-1
+    skip_cleanup: true
 
 after_success:
   - mkdir codedeploy
@@ -55,4 +78,4 @@ deploy:
 notifications:
   email:
     recipients:
-      - kar.n@husky.neu.edu
+      - saraf.s@husky.neu.edu
