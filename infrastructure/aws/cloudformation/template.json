@@ -33,12 +33,34 @@
 		"DBName": {
 			"Type": "String"
 		},
-		"DynamoDBTableName":{
-			"Type" : "String"
+		"DynamoDBTableName": {
+			"Type": "String"
 		},
-		"BucketName":{
-			"Type" : "String"
+		"BucketName": {
+			"Type": "String"
+		},
+		"VpcId": {
+			"Type": "String"
+		},
+		"SubnetId": {
+			"Type": "String"
+		},
+		"SubnetId2": {
+			"Type": "String"
+		},
+		"HostedZoneId": {
+			"Type": "String"
+		},
+		"HostedZoneName": {
+			"Type": "String"
+		},
+		"User1": {
+			"Type": "String"
+		},
+		"User2": {
+			"Type": "String"
 		}
+
 	},
 	"Resources": {
 
@@ -46,7 +68,9 @@
 			"Type": "AWS::EC2::SecurityGroup",
 			"Properties": {
 				"GroupDescription": "Enable HTTP access via port 80, SSH access via port 22, HTTPS via port 443",
-				"VpcId": "vpc-6cb45214",
+				"VpcId": {
+					"Ref": "VpcId"
+				},
 				"GroupName": "csye6225-webapp",
 				"SecurityGroupIngress": [{
 						"IpProtocol": "tcp",
@@ -64,6 +88,12 @@
 						"IpProtocol": "tcp",
 						"FromPort": "443",
 						"ToPort": "443",
+						"CidrIp": "0.0.0.0/0"
+					},
+					{
+						"IpProtocol": "tcp",
+						"FromPort": "-1",
+						"ToPort": "8080",
 						"CidrIp": "0.0.0.0/0"
 					}
 				]
@@ -103,6 +133,65 @@
 				}],
 				"KeyName": {
 					"Ref": "KeyName"
+				},
+				"UserData": {
+					"Fn::Base64": {
+						"Fn::Join": [
+							"\n", [
+								"#!/bin/bash",
+								"sudo apt-get update",
+								"sudo apt-get install openjdk-8-jre-headless -y \n",
+								"sudo apt-get install tomcat8 -y \n",
+								"sudo service tomcat8 start \n",
+								"sudo apt-get update",
+								"sudo apt-get install ruby -y \n",
+								"sudo apt-get install wget \n",
+								"cd /home/ubuntu",
+								"wget https://aws-codedeploy-us-east-1.s3.amazonaws.com/latest/install\n",
+								"sudo chmod +x ./install",
+								"sudo ./install auto \n",
+								"sudo service codedeploy-agent start \n",
+								"sudo service codedeploy-agent status \n",
+								"cd /usr/share/tomcat8/bin",
+								"sudo touch setenv.sh",
+								"sudo chmod 700 setenv.sh",
+								"sudo echo '#!/bin/sh' >> setenv.sh",
+								{
+								"Fn::Join":[
+								"",
+								["echo 'JAVA_OPTS=\"$JAVA_OPTS -Dspring.datasource.url=jdbc:mysql://",
+								{
+									"Fn::GetAtt": [
+									"DBInstance",
+									"Endpoint.Address"
+									]
+								},
+								":3306/csye6225\"\"' >> /setenv.sh"
+								]
+					]											
+								},
+						 		{
+								  "Fn::Join": [
+								    "",
+								    [
+								      "echo 'JAVA_OPTS=\"$JAVA_OPTS -Dspring.datasource.url=jdbc:mysql://",
+								      {
+									"Fn::GetAtt": [
+									  "DBInstance",
+									  "Endpoint.Address"
+									]
+								      },
+								      ":3306/csye6225\"\"'"
+								    ]
+								  ]
+								},								
+								"echo 'JAVA_OPTS=\"$JAVA_OPTS -Dspring.datasource.username=root\"' >> setenv.sh",
+								"echo 'JAVA_OPTS=\"$JAVA_OPTS -Dspring.datasource.password=root\"' >> setenv.sh",
+								"sudo chmod +x setenv.sh",
+								"sudo chown tomcat8:tomcat8 setenv.sh"
+							]
+						]
+					}
 				}
 			}
 		},
@@ -110,7 +199,7 @@
 		"DBInstance": {
 			"Type": "AWS::RDS::DBInstance",
 			"Properties": {
-				"AllocatedStorage" : "100",
+				"AllocatedStorage": "100",
 				"Engine": {
 					"Ref": "DBEngine"
 				},
@@ -143,37 +232,262 @@
 			}
 
 		},
-		"DynamoDBTable" : {
-  			"Type" : "AWS::DynamoDB::Table",
-  			"Properties" : {
-  				  "AttributeDefinitions" :[
-					{
-                 			"AttributeName" : "PrimaryId",
-					"AttributeType" : "S"
-					}],
-  				  "KeySchema" : [
-					{
-					"AttributeName" : "PrimaryId",
-					"KeyType" : "HASH"
-					}],
-  				  "ProvisionedThroughput" : {"ReadCapacityUnits" : "5", "WriteCapacityUnits" : "5"},
-    				  "TableName" : {"Ref" : "DynamoDBTableName"}
-  }
-},
-   		"S3Bucket" : {
-   		   "Type" : "AWS::S3::Bucket",
-		   "Description" : "Name of S3 bucket to hold website content",
-     		   "Properties" : {
-        	   "AccessControl" : "PublicRead",
-       		   "BucketName" : { "Ref" : "BucketName" }
-   }
-},
+		"DynamoDBTable": {
+			"Type": "AWS::DynamoDB::Table",
+			"Properties": {
+				"AttributeDefinitions": [{
+					"AttributeName": "PrimaryId",
+					"AttributeType": "S"
+				}],
+				"KeySchema": [{
+					"AttributeName": "PrimaryId",
+					"KeyType": "HASH"
+				}],
+				"ProvisionedThroughput": {
+					"ReadCapacityUnits": "5",
+					"WriteCapacityUnits": "5"
+				},
+				"TableName": {
+					"Ref": "DynamoDBTableName"
+				}
+			}
+		},
+		"S3Bucket": {
+			"Type": "AWS::S3::Bucket",
+			"Description": "Name of S3 bucket to hold website content",
+			"Properties": {
+				"AccessControl": "PublicRead",
+				"BucketName": {
+					"Ref": "BucketName"
+				}
+			}
+		},
 		"DBSubnet": {
 			"Type": "AWS::RDS::DBSubnetGroup",
 			"Properties": {
 				"DBSubnetGroupDescription": "description",
-				"SubnetIds": ["subnet-a6fa03ed", "subnet-34da7650"]
+				"SubnetIds": [{
+					"Ref": "SubnetId"
+				}, {
+					"Ref": "SubnetId2"
+				}]
 			}
-		}
+		},
+		"myDNSRecord": {
+			"Type": "AWS::Route53::RecordSet",
+			"Properties": {
+				"HostedZoneId": {
+					"Ref": "HostedZoneId"
+				},
+				"Name": {
+					"Ref": "HostedZoneName"
+				},
+				"Comment": "DNS name for my instance.",
+				"Type": "A",
+				"TTL": "60",
+				"ResourceRecords": [{
+					"Fn::GetAtt": ["EC2Instance", "PublicIp"]
+				}]
+			}
+		},
+		"CodeDeployEC2ServiceRolenew": {
+			"Type": "AWS::IAM::Role",
+			"Properties": {
+				"AssumeRolePolicyDocument": {
+					"Version": "2012-10-17",
+					"Statement": [{
+						"Action": "sts:AssumeRole",
+						"Principal": {
+							"Service": "ec2.amazonaws.com"
+						},
+						"Effect": "Allow"
+					}]
+				},
+				"Policies": [{
+					"PolicyName": "CodeDeploy-EC2-S3new",
+					"PolicyDocument": {
+
+						"Version": "2012-10-17",
+						"Statement": [{
+							"Action": [
+								"s3:Get*",
+								"s3:List*"
+							],
+							"Effect": "Allow",
+							"Resource": "arn:aws:s3:::code-deploy.thaokara.me"
+						}]
+					}
+				}]
+			}
+		},
+		"CodeDeployServiceRolenew": {
+			"Type": "AWS::IAM::Role",
+			"Properties": {
+				"AssumeRolePolicyDocument": {
+					"Version": "2012-10-17",
+					"Statement": [{
+						"Action": "sts:AssumeRole",
+						"Principal": {
+							"Service": "ec2.amazonaws.com"
+						},
+						"Effect": "Allow"
+					}]
+				},
+				"Policies": [{
+					"PolicyName": "AWSCodeDeployRolenew",
+					"PolicyDocument": {
+						"Version": "2012-10-17",
+						"Statement": [{
+							"Effect": "Allow",
+							"Action": [
+								"autoscaling:CompleteLifecycleAction",
+								"autoscaling:DeleteLifecycleHook",
+								"autoscaling:DescribeAutoScalingGroups",
+								"autoscaling:DescribeLifecycleHooks",
+								"autoscaling:PutLifecycleHook",
+								"autoscaling:RecordLifecycleActionHeartbeat",
+								"autoscaling:CreateAutoScalingGroup",
+								"autoscaling:UpdateAutoScalingGroup",
+								"autoscaling:EnableMetricsCollection",
+								"autoscaling:DescribeAutoScalingGroups",
+								"autoscaling:DescribePolicies",
+								"autoscaling:DescribeScheduledActions",
+								"autoscaling:DescribeNotificationConfigurations",
+								"autoscaling:DescribeLifecycleHooks",
+								"autoscaling:SuspendProcesses",
+								"autoscaling:ResumeProcesses",
+								"autoscaling:AttachLoadBalancers",
+								"autoscaling:PutScalingPolicy",
+								"autoscaling:PutScheduledUpdateGroupAction",
+								"autoscaling:PutNotificationConfiguration",
+								"autoscaling:PutLifecycleHook",
+								"autoscaling:DescribeScalingActivities",
+								"autoscaling:DeleteAutoScalingGroup",
+								"ec2:DescribeInstances",
+								"ec2:DescribeInstanceStatus",
+								"ec2:TerminateInstances",
+								"tag:GetTags",
+								"tag:GetResources",
+								"sns:Publish",
+								"cloudwatch:DescribeAlarms",
+								"cloudwatch:PutMetricAlarm",
+								"elasticloadbalancing:DescribeLoadBalancers",
+								"elasticloadbalancing:DescribeInstanceHealth",
+								"elasticloadbalancing:RegisterInstancesWithLoadBalancer",
+								"elasticloadbalancing:DeregisterInstancesFromLoadBalancer",
+								"elasticloadbalancing:DescribeTargetGroups",
+								"elasticloadbalancing:DescribeTargetHealth",
+								"elasticloadbalancing:RegisterTargets",
+								"elasticloadbalancing:DeregisterTargets"
+							],
+							"Resource": "arn:aws:iam::aws:policy/service-role/AWSCodeDeployRole"
+						}]
+					}
+				}]
+			}
+		},
+
+		"TravisUploadToS3": {
+			"Type": "AWS::IAM::Policy",
+			"Properties": {
+				"PolicyName": "Travis-Upload-To-S3",
+				"PolicyDocument": {
+					"Version": "2012-10-17",
+					"Statement": [{
+						"Effect": "Allow",
+						"Action": [
+							"s3:PutObject"
+						],
+						"Resource": [
+							"*"
+						]
+					}]
+				},
+				"Users": [{
+					"Ref": "User1"
+				}, {
+					"Ref": "User2"
+				}]
+			}
+		},
+
+		"TravisCodeDeploy": {
+			"Type": "AWS::IAM::Policy",
+			"Properties": {
+				"PolicyName": "Travis-Code-Deploy",
+				"PolicyDocument": {
+					"Version": "2012-10-17",
+					"Statement": [{
+							"Effect": "Allow",
+							"Action": [
+								"codedeploy:RegisterApplicationRevision",
+								"codedeploy:GetApplicationRevision"
+							],
+							"Resource": [
+								"arn:aws:codedeploy:us-east-1:387959445787:application:webapp"
+							]
+						},
+						{
+							"Effect": "Allow",
+							"Action": [
+								"codedeploy:CreateDeployment",
+								"codedeploy:GetDeployment"
+							],
+							"Resource": [
+								"*"
+							]
+						},
+						{
+							"Effect": "Allow",
+							"Action": [
+								"codedeploy:GetDeploymentConfig"
+							],
+							"Resource": [
+								"arn:aws:codedeploy:us-east-1:387959445787:deploymentconfig:CodeDeployDefault.OneAtATime",
+								"arn:aws:codedeploy:us-east-1:387959445787:deploymentconfig:CodeDeployDefault.HalfAtATime",
+								"arn:aws:codedeploy:us-east-1:387959445787:deploymentconfig:CodeDeployDefault.AllAtOnce"
+							]
+						}
+					]
+				},
+				"Users": [{
+					"Ref": "User1"
+				}, {
+					"Ref": "User2"
+				}]
+			}
+		},
+		"CodeDeployEC2S3": {
+			"Type": "AWS::IAM::Policy",
+			"Properties": {
+				"PolicyName": "CodeDeploy-EC2-S3",
+				"PolicyDocument": {
+					"Version": "2012-10-17",
+					"Statement": [{
+						"Action": [
+							"s3:Get*",
+							"s3:List*"
+						],
+						"Effect": "Allow",
+						"Resource": "*"
+					}]
+				},
+				"Roles": [{
+					"Ref": "CodeDeployServiceRolenew"
+				}]
+			},
+		"MyIamProfile": {
+		      "Type": "AWS::IAM::InstanceProfile",
+		      "Properties": {
+			"Roles": [
+			  {
+			    "Ref": "MyIamRole"
+			  }
+			],
+			"InstanceProfileName": "csye-iam-profile"
+	      }
+	    }
+	}
+		
 	}
 }
