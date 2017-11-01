@@ -38,7 +38,7 @@ before_deploy:
 deploy:
 
   - provider: s3
-  - access_key_id: $access_key
+  - access_key_id: $AWS_ACCESS_KEY_ID
   - secret_access_key:
      secure: ${secrete_access_key}
   - local_dir: codedeploy
