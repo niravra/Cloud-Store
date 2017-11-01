@@ -475,7 +475,19 @@
 				"Roles": [{
 					"Ref": "CodeDeployServiceRolenew"
 				}]
-			}
-		}
+			},
+		"MyIamProfile": {
+		      "Type": "AWS::IAM::InstanceProfile",
+		      "Properties": {
+			"Roles": [
+			  {
+			    "Ref": "MyIamRole"
+			  }
+			],
+			"InstanceProfileName": "csye-iam-profile"
+	      }
+	    }
+	}
+		
 	}
 }
