@@ -9,6 +9,10 @@ package com.csye6225.demo.controllers;
 import java.io.File;
 import java.io.IOException;
 
+import com.amazonaws.auth.profile.ProfileCredentialsProvider;
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.AmazonS3Client;
+import com.amazonaws.services.s3.model.*;
 import com.csye6225.demo.dao.AttachmentDao;
 import com.csye6225.demo.dao.PersonDao;
 import com.csye6225.demo.dao.TaskDao;
@@ -40,6 +44,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import javax.persistence.Id;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.InputStream;
 import java.lang.reflect.Array;
 import java.nio.charset.Charset;
 import java.util.*;
@@ -267,17 +272,17 @@ public class TaskController {
         List<Person> personList = personDao.findByName(username);
         if (personList.size() > 0) {
 
-            // for Bcrypt password from normal header
-//            if (bCryptPasswordEncoder.matches(password, personList.get(0).getPassword())) {
-//                return true;
-//            } else
-//                return false;
-
-            // for Jmeter
-            if (password.equals(personList.get(0).getPassword())) {
+         //    for Bcrypt password from normal header
+            if (bCryptPasswordEncoder.matches(password, personList.get(0).getPassword())) {
                 return true;
             } else
                 return false;
+
+            // for Jmeter
+//            if (password.equals(personList.get(0).getPassword())) {
+//                return true;
+//            } else
+//                return false;
 
         } else
             return false;
@@ -331,7 +336,56 @@ public class TaskController {
                 //String name = "/home/sumedh/assignment5/code1/" + files.getOriginalFilename();
                 //String filepath = System.getProperty("user.dir");
                // filepath.concat(name);
-                files.transferTo(new File(file_Path));
+               // files.transferTo(new File(file_Path));
+
+                AmazonS3 s3client = new AmazonS3Client(new ProfileCredentialsProvider());
+                Bucket b = null;
+                String bucketname = "csye6225nasp";
+
+
+
+
+//
+
+
+                InputStream is= files.getInputStream();
+
+                String contentType = files.getContentType();
+
+                Long fileSize = files.getSize();
+
+                ObjectMetadata meta = new ObjectMetadata();
+
+                meta.setContentType(contentType);
+                String key = files.getOriginalFilename();
+
+                meta.setContentLength(fileSize);
+                if (s3client.doesBucketExist(bucketname)){
+                    s3client.putObject(new PutObjectRequest("csye6225nasp", key, is, meta));
+                }
+                else
+                {
+                    s3client.createBucket("csye6225nasp");
+                    s3client.putObject(new PutObjectRequest("csye6225nasp", key, is, meta));
+                }
+
+//        File trans = new File("/home/snigdha/"+file.getOriginalFilename());
+
+//        file.transferTo(trans);
+
+//        System.out.println(trans);
+
+//        PutObjectRequest req = new PutObjectRequest(bucketName, key, trans);
+
+//        s3Client.putObject(req);
+
+
+
+
+
+
+
+                //s3client.putObject("csye6225nasp","csye6225nasp", (File) files);
                 AttachmentData ad = new AttachmentData();
                 ad.setContent(file_Path);
                 Task task = tlist.get(0);
@@ -443,8 +497,9 @@ public class TaskController {
             response.setStatus(401, "Unauthorized");
             jsonObject.addProperty("Response code", "The Basic Auth is not provided");
             return jsonObject.toString();
-        } else
+        } else {
             auth = checkAuth(headValue[0], headValue[1]);
+        }
 
 
         if (auth) {
@@ -456,23 +511,38 @@ public class TaskController {
 
                 //List<Task> tlist1 = taskDao.findByTaskId(UUID.fromString(id));
                 List<AttachmentData> ads = attachmentDao.findByAttachId(UUID.fromString(attachementId));
-
-                if(ads.size() > 0) {
-                   // for (AttachmentData tk : ads) {
+                JsonObject jobj = new JsonObject();
+                if (ads.size() > 0) {
+                    // for (AttachmentData tk : ads) {
                     AttachmentData nn = new AttachmentData();
-                        nn.setContent(ads.get(0).getContent());
-                        nn.setAttachId(ads.get(0).getAttachId());
-                        attachmentDao.delete(nn);
-                        File file = new File(nn.getContent());
-                        file.delete();
-                        JsonObject jobj = new JsonObject();
+                    nn.setContent(ads.get(0).getContent());
+                    nn.setAttachId(ads.get(0).getAttachId());
+                    attachmentDao.delete(nn);
 
-                        jobj.addProperty("id", String.valueOf(ads.get(0).getAttachId()));
-                        jobj.addProperty("url", ads.get(0).getContent());
-                        jsonArray.add(jobj);
-                   // }
-                }
-                else {
+
+                    AmazonS3 s3client = new AmazonS3Client(new ProfileCredentialsProvider());
+                    ObjectListing objectListing = s3client.listObjects("csye6225nasp");
+                  //  while (true) {
+                        for (Iterator<?> iterator = objectListing.getObjectSummaries().iterator();
+                             iterator.hasNext(); ) {
+                            S3ObjectSummary summary = (S3ObjectSummary) iterator.next();
+                            s3client.deleteObject("csye6225nasp", nn.getContent());
+
+                            jobj.addProperty("id", String.valueOf(ads.get(0).getAttachId()));
+                            jobj.addProperty("url", ads.get(0).getContent());
+                            jsonArray.add(jobj);
+                        }
+                    //}
+
+
+                    //File file = new File(nn.getContent());
+                    //file.delete();
+
+
+
+
+                    // }
+                } else {
 
                     response.setStatus(201, "Unauthorized");
                     jsonObject.addProperty("message", "No attachments found for the given taskId");
@@ -481,8 +551,8 @@ public class TaskController {
 
                 return jsonArray.toString();
 
-
-            } else {
+            }
+             else {
 
                 response.setStatus(201, "Unauthorized");
                 jsonObject.addProperty("message", "No tasks found");
