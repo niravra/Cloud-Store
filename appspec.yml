@@ -9,8 +9,8 @@ files:
   - source: ./build/libs/ROOT.war
     destination: /var/lib/tomcat8/webapps
 
-hooks:
-  AfterInstall:
-   - location: ./restartTomcat.sh
-     timeout: 180
-     runas: ubuntu
+#hooks:
+#  AfterInstall:
+#   - location: ./restartTomcat.sh
+#     timeout: 180
+#     runas: ubuntu
