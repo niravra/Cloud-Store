@@ -41,7 +41,7 @@ deploy:
    access_key_id: AKIAI4HK3HQTPYAV5HAA
    secret_access_key: 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
    local_dir: codedeploy
-   bucket: code-deploy.csye6225-fall2017.sarafs.com
+   bucket: sarafssumedh
    region: us-east-1
    skip_cleanup: true
    on:
@@ -50,7 +50,7 @@ deploy:
  - provider: codedeploy
    access_key_id: AKIAI4HK3HQTPYAV5HAA
    secret_access_key: 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
-   bucket: code-deploy.csye6225-fall2017.sarafs.com
+   bucket: sarafssumedh
    key: csye6225-fall2017-codedeploy.zip
    bundle_type: zip
    application: CSYE6225Project
