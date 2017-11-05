@@ -1,4 +1,3 @@
-
 # <Niravra Kar>, <001252638>, <kar.n@husky.neu.edu>
 # <Sumedh Saraf>, <001267030>, <saraf.s@husky.neu.edu>
 # <Parakh Mahajan>, <001236045>, <mahajan.pa@husky.neu.edu>
@@ -10,16 +9,23 @@ language:
 jdk:
   - oraclejdk8
 
+before_script:
+  - chmod +x gradlew
+
 sudo: false
+
 install: true
 
 script:
   - ./gradlew build
+  - ./gradlew war
+
 
 after_success:
   - mkdir codedeploy
-  - zip -r myapp-${TRAVIS_JOB_NUMBER}.zip build/libs/ROOT.war appspec.yml
-  - mv -r myapp-${TRAVIS_JOB_NUMBER}.zip codedeploy
+  - zip -r csye6225-fall2017-codedeploy.zip build/libs/ROOT.war appspec.yml restartTomcat.sh
+  - ls -al
+  - mv csye6225-fall2017-codedeploy.zip codedeploy/
   - ls -al
   - pwd
   - cd codedeploy
@@ -30,52 +36,34 @@ before_deploy:
   - cd ..
 
 deploy:
-  - provider: s3
-    access_key_id: AKIAJAOB2INYLKYO4LTA
-    secret_access_key:
-     secure: ldjcUYwzKwwJw5USkPxx8UBj9qB6sqDpA2zDB5DzeJTZCDpwkjUVz7tscjeMX2XN1ON0p7aRGcECEQUidfL0Ty2Z2g1SJ0MUtGm+3IaIuZPiQfxCc9g9+qXKGa9EqwWu5PKy9uw/MqR1QLTmoaMfrvz2BwMwON9gUIKgshhlDPq3k7TLR8gIDnAk/UTwWd7QPLD+lHUESOVOydo2wXCSeRcrdtDAv+f7cggoR1DyTzu0Dt2QuIWcHgwkhjCTpBzfmfR9kYnjMkSeBZa+sj30l24MLU4jrM4hAqc9wN6FXuDHUplUTV7tZW+8x6IdgfPA5gTr/nt9qrReGH38NS87TckK7PunvjgjTj73Gv7mm/e75msVoPsypkmwA1rlQQDBkJaFTcK7cCA0sV7cla5ccNMsr1qdsG7/GdohXq/6uDlocyl4R32geEYd1uSPpp9TbXP0pv5/FkoltcDilKjoPZiSF5Z/MTmhyJbm5QHoWkoD/Sf1cKVqajKNwZXBQvVXno8sRQtsiHfJYi7dMJZzKVHbU843qhE+lZ1cGp3jdxqd3Bu+nbJt3PonDqZhD/GRlDuGrnfEw7cfjc8vi8nyEurbILf6L/vPadWDLP5KJEQXyXVST4IaKVYzicsvpAS5+hJlpEdeeosRS0LOwSAGoIbvFKehe9yCz0Q7oWbp25U=
-    local_dir: codedeploy
-    bucket: team_four_finals
-    region: us-east-1
-    skip_cleanup: true
 
-after_success:
-  - mkdir codedeploy
-  - zip -r CSYE6225Project-${TRAVIS_JOB_NUMBER}.zip build/libs/ROOT.war appspec.yml
-  - ls -al
-  - mv CSYE6225Project-${TRAVIS_JOB_NUMBER}.zip codedeploy/
-  - ls -al
-  - pwd
-  - cd codedeploy
-  - ls -al
-  - pwd
+ - provider: s3
+   access_key_id: AKIAI7P53JJ3GMZMG2DA
+   secret_access_key: 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
+   local_dir: codedeploy
+   bucket: code-deploy.csye6225-fall2017.karn.com
+   region: us-east-1
+   skip_cleanup: true
+   on:
+     all-branches: true
 
-before_deploy:
-  - cd ..
+ - provider: codedeploy
+   access_key_id: AKIAI7P53JJ3GMZMG2DA
+   secret_access_key: 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
+   bucket: code-deploy.csye6225-fall2017.karn.com
+   key: csye6225-fall2017-codedeploy.zip
+   bundle_type: zip
+   application: CSYE6225Project
+   deployment_group: CSYE6225Project
+   region: us-east-1
+   wait-until-deployed: true
 
 
-deploy:
-  - provider: s3
-    access_key_id: AKIAI2CA26RU7CW2X4VQ
-    secret_access_key:
-      secure: PwXLAo9KeqRamSA7DpLo0j0g5SwrTDjW6dRi0Lph2quI7uiSmUoRCxhpHC1UaLe/MwAX9erHjbj2k4cpJavnkz5Eduxa5Ztcm6jpr9ZVo4LzkeyKch3knAvfFEympwOTV+lXT6158lQrQbhkPMk/FHjOJj8qejnz1LMPSBJhw4CN2TSUy0NwhZufRGqppBBo0V3vrbTYT7OOxjo6OOpaGs7JwxKYdIzTlP9z6af7EDUYxWxBvcBrpzbnllcl+AdpWLqyGr1WTTZ/2Gv+wuwV+wv3tKk1bMS411yVo3vSr0qXlzDmKe5uaIp/H9fJjMwAEHE1JeYyrmDdPk8LsOnD/V8cgXXBCpX2DXhu4b7dCq/1PNE6L/Kh/BoZiieYcwpwTeAlg8+t0XAAQyiyLaw2DQmnt4i4MnhI+fYluOMZOw6zlweZyyXS8EGS84JpwM3tJGpjpmDPSMiN+2YBAZVgmXW42jEWby+KUwjYOS+ffNAMHHjpX34NhHqZTn4UvasT1T5rWouCkHsE3nzwYjEYXmVupgeIMihWnSaR3ZsiPvKH6YCAv+MQP6EXw7gy3ErTNjVjaHE60SoTdcTAu01HgNzlQFiJUG0Ok9VnqyfS7tpbsVqmaMoLHJ5db4p1w1M7xntWdx8cpin3zeh2bIVtXXWTQeJ6tn+wo0FUibWjISo=
-    local_dir: codedeploy
-    bucket: code-deploy.csye6225-fall2017.karn.com
-    region: us-east-1
-    skip_cleanup: true
-  - provider: codedeploy
-    access_key_id: AKIAI2CA26RU7CW2X4VQ
-    bucket: code-deploy.csye6225-fall2017.karn.com
-    key: CSYE6225Project-${TRAVIS_JOB_NUMBER}.zip
-    bundle_type: zip
-    application: CSYE6225Project
-    deployment_group: CSYE6225Project
-    region: us-east-1
-    secret_access_key:
-      secure: PwXLAo9KeqRamSA7DpLo0j0g5SwrTDjW6dRi0Lph2quI7uiSmUoRCxhpHC1UaLe/MwAX9erHjbj2k4cpJavnkz5Eduxa5Ztcm6jpr9ZVo4LzkeyKch3knAvfFEympwOTV+lXT6158lQrQbhkPMk/FHjOJj8qejnz1LMPSBJhw4CN2TSUy0NwhZufRGqppBBo0V3vrbTYT7OOxjo6OOpaGs7JwxKYdIzTlP9z6af7EDUYxWxBvcBrpzbnllcl+AdpWLqyGr1WTTZ/2Gv+wuwV+wv3tKk1bMS411yVo3vSr0qXlzDmKe5uaIp/H9fJjMwAEHE1JeYyrmDdPk8LsOnD/V8cgXXBCpX2DXhu4b7dCq/1PNE6L/Kh/BoZiieYcwpwTeAlg8+t0XAAQyiyLaw2DQmnt4i4MnhI+fYluOMZOw6zlweZyyXS8EGS84JpwM3tJGpjpmDPSMiN+2YBAZVgmXW42jEWby+KUwjYOS+ffNAMHHjpX34NhHqZTn4UvasT1T5rWouCkHsE3nzwYjEYXmVupgeIMihWnSaR3ZsiPvKH6YCAv+MQP6EXw7gy3ErTNjVjaHE60SoTdcTAu01HgNzlQFiJUG0Ok9VnqyfS7tpbsVqmaMoLHJ5db4p1w1M7xntWdx8cpin3zeh2bIVtXXWTQeJ6tn+wo0FUibWjISo=
-    wait-until-deployed: true
 
 notifications:
   email:
     recipients:
       - saraf.s@husky.neu.edu
+      - kar.n@husky.neu.edu
+      - mahajan.pa@husky.neu.edu
+      - thaokar.a@husky.neu.edu
