@@ -342,7 +342,9 @@ public class TaskController {
 //                AmazonS3 s3client = new AmazonS3Client(new ProfileCredentialsProvider());
                 AmazonS3 s3client = new AmazonS3Client(DefaultAWSCredentialsProviderChain.getInstance());
                 Bucket b = null;
-                String bucketname = "csye6225nasp";
+//                 String bucketname = "csye6225nasp";
+                String bucketname = "csye6225-fall2017-csye-nasp.com";
+                
 
 
 
@@ -524,7 +526,8 @@ public class TaskController {
 
 //                    AmazonS3 s3client = new AmazonS3Client(new ProfileCredentialsProvider());
                     AmazonS3 s3client = new AmazonS3Client(DefaultAWSCredentialsProviderChain.getInstance());
-                    ObjectListing objectListing = s3client.listObjects("csye6225nasp");
+                    ObjectListing objectListing = s3client.listObjects("csye6225-fall2017-csye-nasp.com");
+
                   //  while (true) {
                         for (Iterator<?> iterator = objectListing.getObjectSummaries().iterator();
                              iterator.hasNext(); ) {
