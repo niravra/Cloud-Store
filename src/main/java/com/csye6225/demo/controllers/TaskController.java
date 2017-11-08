@@ -520,7 +520,7 @@ public class TaskController {
                     attachmentDao.delete(nn);
 
 
-                    AmazonS3 s3client = new AmazonS3Client(new ProfileCredentialsProvider());
+                    AmazonS3 s3client = new AmazonS3Client(DefaultAWSCredentialsProviderChain.getInstance());
                     ObjectListing objectListing = s3client.listObjects("csye6225nasp");
                   //  while (true) {
                         for (Iterator<?> iterator = objectListing.getObjectSummaries().iterator();
