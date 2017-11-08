@@ -134,14 +134,11 @@
 				"KeyName": {
 					"Ref": "KeyName"
 				},
-				"Tags": [
-				{
+				"Tags": [{
 					"Key": "NASP",
 					"Value": "CSYE6225"
-				}
-				]
-				,
-				"DisableApiTermination": "true",
+				}],
+				"DisableApiTermination": "false",
 				"IamInstanceProfile": {
 					"Ref": "MyIamProfile"
 				},
@@ -168,38 +165,25 @@
 								"sudo chmod 700 setenv.sh",
 								"sudo echo '#!/bin/sh' >> setenv.sh",
 								{
-								"Fn::Join":[
-								"",
-								["echo 'JAVA_OPTS=\"$JAVA_OPTS -Dspring.datasource.url=jdbc:mysql://",
-								{
-									"Fn::GetAtt": [
-									"DBInstance",
-									"Endpoint.Address"
+									"Fn::Join": [
+										"", [
+											"echo 'JAVA_OPTS=\"$JAVA_OPTS -Dspring.datasource.url=jdbc:mysql://",
+											{
+												"Fn::GetAtt": [
+													"DBInstance",
+													"Endpoint.Address"
+												]
+											},
+											":3306/csye6225\"' >> setenv.sh"
+										]
 									]
 								},
-								":3306/csye6225\"\"' >> /setenv.sh"
-								]
-					]											
-								},
-						 		{
-								  "Fn::Join": [
-								    "",
-								    [
-								      "echo 'JAVA_OPTS=\"$JAVA_OPTS -Dspring.datasource.url=jdbc:mysql://",
-								      {
-									"Fn::GetAtt": [
-									  "DBInstance",
-									  "Endpoint.Address"
-									]
-								      },
-								      ":3306/csye6225\"\"'"
-								    ]
-								  ]
-								},								
-								"echo 'JAVA_OPTS=\"$JAVA_OPTS -Dspring.datasource.username=root\"' >> setenv.sh",
-								"echo 'JAVA_OPTS=\"$JAVA_OPTS -Dspring.datasource.password=root\"' >> setenv.sh",
+								"echo 'JAVA_OPTS=\"$JAVA_OPTS -Dspring.datasource.username=csye6225master\"' >> setenv.sh",
+								"echo 'JAVA_OPTS=\"$JAVA_OPTS -Dspring.datasource.password=csye6225password\"' >> setenv.sh",
 								"sudo chmod +x setenv.sh",
-								"sudo chown tomcat8:tomcat8 setenv.sh"
+								"sudo chown tomcat8:tomcat8 setenv.sh",
+								"cd /var/lib/tomcat8/webapps",
+								"sudo rm -r ROOT"
 							]
 						]
 					}
@@ -391,7 +375,9 @@
 								"elasticloadbalancing:RegisterTargets",
 								"elasticloadbalancing:DeregisterTargets"
 							],
-							"Resource": "arn:aws:iam::aws:policy/service-role/AWSCodeDeployRole"
+							"Resource": [
+								"*"
+							]
 						}]
 					}
 				}]
@@ -454,9 +440,7 @@
 								"codedeploy:GetDeploymentConfig"
 							],
 							"Resource": [
-								"arn:aws:codedeploy:us-east-1:387959445787:deploymentconfig:CodeDeployDefault.OneAtATime",
-								"arn:aws:codedeploy:us-east-1:387959445787:deploymentconfig:CodeDeployDefault.HalfAtATime",
-								"arn:aws:codedeploy:us-east-1:387959445787:deploymentconfig:CodeDeployDefault.AllAtOnce"
+								"*"
 							]
 						}
 					]
@@ -473,33 +457,50 @@
 			"Properties": {
 				"PolicyName": "CodeDeploy-EC2-S3",
 				"PolicyDocument": {
+
 					"Version": "2012-10-17",
 					"Statement": [{
-						"Action": [
-							"s3:Get*",
-							"s3:List*"
-						],
-						"Effect": "Allow",
-						"Resource": "*"
-					}]
+							"Effect": "Allow",
+							"Action": [
+								"s3:GetBucketLocation",
+								"s3:ListAllMyBuckets"
+							],
+							"Resource": "*"
+						},
+						{
+							"Effect": "Allow",
+							"Action": ["s3:ListBucket"],
+							"Resource": ["arn:aws:s3:::test"]
+						},
+						{
+							"Effect": "Allow",
+							"Action": [
+								"s3:PutObject",
+								"s3:GetObject",
+								"s3:DeleteObject"
+							],
+							"Resource": [
+								"*"
+							]
+						}
+					]
+
 				},
 				"Roles": [{
 					"Ref": "CodeDeployServiceRolenew"
 				}]
 			}
-			},
+		},
 		"MyIamProfile": {
-		      "Type": "AWS::IAM::InstanceProfile",
-		      "Properties": {
-			"Roles": [
-			  {
-			    "Ref": "CodeDeployEC2ServiceRolenew"
-			  }
-			],
-			"InstanceProfileName": "csye-iam-profile"
-	      
-	    }
-	}
-		
+			"Type": "AWS::IAM::InstanceProfile",
+			"Properties": {
+				"Roles": [{
+					"Ref": "CodeDeployEC2ServiceRolenew"
+				}],
+				"InstanceProfileName": "csye-iam-profile"
+
+			}
+		}
+
 	}
 }
