@@ -40,6 +40,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import com.amazonaws.auth.DefaultAWSCredentialsProviderChain;
 
 import javax.persistence.Id;
 import javax.servlet.http.HttpServletRequest;
@@ -338,7 +339,8 @@ public class TaskController {
                // filepath.concat(name);
                // files.transferTo(new File(file_Path));
 
-                AmazonS3 s3client = new AmazonS3Client(new ProfileCredentialsProvider());
+//                AmazonS3 s3client = new AmazonS3Client(new ProfileCredentialsProvider());
+                AmazonS3 s3client = new AmazonS3Client(DefaultAWSCredentialsProviderChain.getInstance());
                 Bucket b = null;
                 String bucketname = "csye6225nasp";
 
@@ -520,7 +522,8 @@ public class TaskController {
                     attachmentDao.delete(nn);
 
 
-                    AmazonS3 s3client = new AmazonS3Client(new ProfileCredentialsProvider());
+//                    AmazonS3 s3client = new AmazonS3Client(new ProfileCredentialsProvider());
+                    AmazonS3 s3client = new AmazonS3Client(DefaultAWSCredentialsProviderChain.getInstance());
                     ObjectListing objectListing = s3client.listObjects("csye6225nasp");
                   //  while (true) {
                         for (Iterator<?> iterator = objectListing.getObjectSummaries().iterator();
