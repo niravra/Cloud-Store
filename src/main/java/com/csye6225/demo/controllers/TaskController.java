@@ -8,7 +8,7 @@ package com.csye6225.demo.controllers;
 
 import java.io.File;
 import java.io.IOException;
-
+import com.amazonaws.auth.DefaultAWSCredentialsProviderChain;
 import com.amazonaws.auth.profile.ProfileCredentialsProvider;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3Client;
