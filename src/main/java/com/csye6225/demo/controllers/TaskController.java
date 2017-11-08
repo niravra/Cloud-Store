@@ -342,7 +342,7 @@ public class TaskController {
 //                AmazonS3 s3client = new AmazonS3Client(new ProfileCredentialsProvider());
                 AmazonS3 s3client = new AmazonS3Client(DefaultAWSCredentialsProviderChain.getInstance());
                 Bucket b = null;
-                String bucketname = "csye6225nasp";
+                String bucketname = "csye6225-fall2017-csye-nasp.com";
 
 
 
@@ -363,12 +363,12 @@ public class TaskController {
 
                 meta.setContentLength(fileSize);
                 if (s3client.doesBucketExist(bucketname)){
-                    s3client.putObject(new PutObjectRequest("csye6225nasp", key, is, meta));
+                    s3client.putObject(new PutObjectRequest("csye6225-fall2017-csye-nasp.com", key, is, meta));
                 }
                 else
                 {
-                    s3client.createBucket("csye6225nasp");
-                    s3client.putObject(new PutObjectRequest("csye6225nasp", key, is, meta));
+                    s3client.createBucket("csye6225-fall2017-csye-nasp.com");
+                    s3client.putObject(new PutObjectRequest("csye6225-fall2017-csye-nasp.com", key, is, meta));
                 }
 
 //        File trans = new File("/home/snigdha/"+file.getOriginalFilename());
@@ -524,12 +524,12 @@ public class TaskController {
 
 //                    AmazonS3 s3client = new AmazonS3Client(new ProfileCredentialsProvider());
                     AmazonS3 s3client = new AmazonS3Client(DefaultAWSCredentialsProviderChain.getInstance());
-                    ObjectListing objectListing = s3client.listObjects("csye6225nasp");
+                    ObjectListing objectListing = s3client.listObjects("csye6225-fall2017-csye-nasp.com");
                   //  while (true) {
                         for (Iterator<?> iterator = objectListing.getObjectSummaries().iterator();
                              iterator.hasNext(); ) {
                             S3ObjectSummary summary = (S3ObjectSummary) iterator.next();
-                            s3client.deleteObject("csye6225nasp", nn.getContent());
+                            s3client.deleteObject("csye6225-fall2017-csye-nasp.com", nn.getContent());
 
                             jobj.addProperty("id", String.valueOf(ads.get(0).getAttachId()));
                             jobj.addProperty("url", ads.get(0).getContent());
