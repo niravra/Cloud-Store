@@ -338,7 +338,7 @@ public class TaskController {
                // filepath.concat(name);
                // files.transferTo(new File(file_Path));
 
-                AmazonS3 s3client = new AmazonS3Client(new ProfileCredentialsProvider());
+                AmazonS3 s3client = new AmazonS3Client();
                 Bucket b = null;
                 String bucketname = "csye6225nasp";
 
