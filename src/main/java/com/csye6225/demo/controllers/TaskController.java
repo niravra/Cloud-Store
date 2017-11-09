@@ -9,7 +9,6 @@ package com.csye6225.demo.controllers;
 import java.io.File;
 import java.io.IOException;
 
-import com.amazonaws.auth.profile.ProfileCredentialsProvider;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.*;
@@ -21,15 +20,8 @@ import com.csye6225.demo.entity.Person;
 import com.csye6225.demo.entity.Task;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
-import org.springframework.security.authentication.AnonymousAuthenticationToken;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -37,16 +29,12 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import com.amazonaws.auth.DefaultAWSCredentialsProviderChain;
 
-import javax.persistence.Id;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.InputStream;
-import java.lang.reflect.Array;
 import java.nio.charset.Charset;
 import java.util.*;
 
@@ -73,9 +61,12 @@ public class TaskController {
     @Autowired
     private AttachmentDao attachmentDao;
 
+//    @Autowired
+//    private PasswordTokenRepository passwordTokenRepository;
+
     @RequestMapping(value = "/tasks", method = RequestMethod.GET, produces = {"application/json"})
     @ResponseBody
-    public String registerTask(HttpServletRequest httpRequest,HttpServletResponse response) {
+    public String registerTask(HttpServletRequest httpRequest, HttpServletResponse response) {
         JsonArray jsonArray = new JsonArray();
         JsonObject jsonObject = new JsonObject();
         String[] headValue = HeaderCheck(httpRequest);
@@ -179,8 +170,8 @@ public class TaskController {
 
             List<Task> taskList = taskDao.findByPerson(p.get(0));
             for (Task t1 : taskList) {
-                System.out.println( "The ID from request is  : " +id);
-                if (t1.getTaskId().toString().equals(id)){
+                System.out.println("The ID from request is  : " + id);
+                if (t1.getTaskId().toString().equals(id)) {
                     t1.setDesc(task.getDesc());
                     t1.setPerson(p.get(0));
                     taskDao.save(t1);
@@ -190,7 +181,7 @@ public class TaskController {
                     taskChecker = true;
                 }
             }
-            if(taskChecker){
+            if (taskChecker) {
                 response.setStatus(403, "Forbidden");
             }
 
@@ -227,23 +218,22 @@ public class TaskController {
 
             List<Task> taskList = taskDao.findByPerson(p.get(0));
             for (Task t1 : taskList) {
-                System.out.println( "The ID from request is  : " +id);
-                System.out.println("The ID inside the method is " +t1.getTaskId());
+                System.out.println("The ID from request is  : " + id);
+                System.out.println("The ID inside the method is " + t1.getTaskId());
 
-                if (t1.getTaskId().toString().equals(id)){
+                if (t1.getTaskId().toString().equals(id)) {
 
                     List<AttachmentData> yy = attachmentDao.findAttachmentDataByTask(t1);
 
-                    for (AttachmentData a:yy)
-                       {
+                    for (AttachmentData a : yy) {
 
-                           File f = new File(a.getContent());
-                           f.delete();
+                        File f = new File(a.getContent());
+                        f.delete();
 
 
-                       }
+                    }
 
-                        attachmentDao.delete(yy);
+                    attachmentDao.delete(yy);
 
 
                     taskDao.delete(t1);
@@ -253,7 +243,7 @@ public class TaskController {
                     taskChecker = true;
                 }
             }
-            if(taskChecker){
+            if (taskChecker) {
                 response.setStatus(401, "Unauthorized");
             }
 
@@ -268,12 +258,12 @@ public class TaskController {
 
 
     public boolean checkAuth(String username, String password) {
-        if (username == null  || password == null) return false;
+        if (username == null || password == null) return false;
         String encrypt = bCryptPasswordEncoder.encode(password);
         List<Person> personList = personDao.findByName(username);
         if (personList.size() > 0) {
 
-         //    for Bcrypt password from normal header
+            //    for Bcrypt password from normal header
             if (bCryptPasswordEncoder.matches(password, personList.get(0).getPassword())) {
                 return true;
             } else
@@ -305,13 +295,10 @@ public class TaskController {
     }
 
 
-
-
-
     @RequestMapping(value = "/tasks/{id}/attachments", method = RequestMethod.POST, produces = {"application/json"}
-            )
+    )
     @ResponseBody
-    public String AddAttachment(@PathVariable("id") String id, @RequestParam("file")MultipartFile files,
+    public String AddAttachment(@PathVariable("id") String id, @RequestParam("file") MultipartFile files,
                                 @RequestParam("file_Path") String file_Path,
                                 HttpServletRequest httpRequest, HttpServletResponse response)
             throws IOException {
@@ -336,8 +323,8 @@ public class TaskController {
             if (tlist.size() > 0) {
                 //String name = "/home/sumedh/assignment5/code1/" + files.getOriginalFilename();
                 //String filepath = System.getProperty("user.dir");
-               // filepath.concat(name);
-               // files.transferTo(new File(file_Path));
+                // filepath.concat(name);
+                // files.transferTo(new File(file_Path));
 
 //                AmazonS3 s3client = new AmazonS3Client(new ProfileCredentialsProvider());
                 AmazonS3 s3client = new AmazonS3Client(DefaultAWSCredentialsProviderChain.getInstance());
@@ -346,17 +333,12 @@ public class TaskController {
                 String bucketname = "csye6225-fall2017-csye-nasp.com";
 
 //                 String bucketname = "csye6225nasp";
-                
-                
-
-
-
 
 
 //
 
 
-                InputStream is= files.getInputStream();
+                InputStream is = files.getInputStream();
 
                 String contentType = files.getContentType();
 
@@ -368,11 +350,9 @@ public class TaskController {
                 String key = files.getOriginalFilename();
 
                 meta.setContentLength(fileSize);
-                if (s3client.doesBucketExist(bucketname)){
+                if (s3client.doesBucketExist(bucketname)) {
                     s3client.putObject(new PutObjectRequest("csye6225-fall2017-csye-nasp.com", key, is, meta));
-                }
-                else
-                {
+                } else {
                     s3client.createBucket("csye6225-fall2017-csye-nasp.com");
                     s3client.putObject(new PutObjectRequest("csye6225-fall2017-csye-nasp.com", key, is, meta));
                 }
@@ -386,11 +366,6 @@ public class TaskController {
 //        PutObjectRequest req = new PutObjectRequest(bucketName, key, trans);
 
 //        s3Client.putObject(req);
-
-
-
-
-
 
 
                 //s3client.putObject("csye6225nasp","csye6225nasp", (File) files);
@@ -436,7 +411,7 @@ public class TaskController {
     @RequestMapping(value = "/tasks/{id}/attachments", method = RequestMethod.GET, produces = {"application/json"}
     )
     @ResponseBody
-    public String getAttachments(@PathVariable("id") String id,HttpServletRequest httpRequest, HttpServletResponse response) throws IOException {
+    public String getAttachments(@PathVariable("id") String id, HttpServletRequest httpRequest, HttpServletResponse response) throws IOException {
         JsonObject jsonObject = new JsonObject();
         JsonArray jsonArray = new JsonArray();
         String[] headValue = HeaderCheck(httpRequest);
@@ -491,7 +466,7 @@ public class TaskController {
     @RequestMapping(value = "/tasks/{taskId}/attachments/{attachementId}", method = RequestMethod.DELETE, produces = {"application/json"}
     )
     @ResponseBody
-    public String deleteAttachment(@PathVariable("taskId") String taskId,@PathVariable("attachementId") String attachementId,
+    public String deleteAttachment(@PathVariable("taskId") String taskId, @PathVariable("attachementId") String attachementId,
                                    HttpServletRequest httpRequest, HttpServletResponse response) throws IOException {
         JsonObject jsonObject = new JsonObject();
         JsonArray jsonArray = new JsonArray();
@@ -532,23 +507,21 @@ public class TaskController {
                     AmazonS3 s3client = new AmazonS3Client(DefaultAWSCredentialsProviderChain.getInstance());
                     ObjectListing objectListing = s3client.listObjects("csye6225-fall2017-csye-nasp.com");
 
-                  //  while (true) {
-                        for (Iterator<?> iterator = objectListing.getObjectSummaries().iterator();
-                             iterator.hasNext(); ) {
-                            S3ObjectSummary summary = (S3ObjectSummary) iterator.next();
-                            s3client.deleteObject("csye6225-fall2017-csye-nasp.com", nn.getContent());
+                    //  while (true) {
+                    for (Iterator<?> iterator = objectListing.getObjectSummaries().iterator();
+                         iterator.hasNext(); ) {
+                        S3ObjectSummary summary = (S3ObjectSummary) iterator.next();
+                        s3client.deleteObject("csye6225-fall2017-csye-nasp.com", nn.getContent());
 
-                            jobj.addProperty("id", String.valueOf(ads.get(0).getAttachId()));
-                            jobj.addProperty("url", ads.get(0).getContent());
-                            jsonArray.add(jobj);
-                        }
+                        jobj.addProperty("id", String.valueOf(ads.get(0).getAttachId()));
+                        jobj.addProperty("url", ads.get(0).getContent());
+                        jsonArray.add(jobj);
+                    }
                     //}
 
 
                     //File file = new File(nn.getContent());
                     //file.delete();
-
-
 
 
                     // }
@@ -561,8 +534,7 @@ public class TaskController {
 
                 return jsonArray.toString();
 
-            }
-             else {
+            } else {
 
                 response.setStatus(201, "Unauthorized");
                 jsonObject.addProperty("message", "No tasks found");
@@ -580,5 +552,30 @@ public class TaskController {
 
     }
 
+    @RequestMapping(value = "/forgot-password", method = RequestMethod.POST, produces = {"application/json"})
+    @ResponseBody
+    public String forgotPassword(HttpServletRequest httpRequest, HttpServletResponse response) {
+        JsonArray jsonArray = new JsonArray();
+        JsonObject jsonObject = new JsonObject();
+        String[] headValue = HeaderCheck(httpRequest);
+        boolean auth = checkAuth(headValue[0], headValue[1]);
+
+        if (headValue.equals(null)) {
+            jsonObject.addProperty("message", "The Basic Auth is not provided");
+            return jsonObject.toString();
+        }
+
+
+        if (auth) {
+
+        }
+        response.setStatus(201, "OK");
+        return jsonArray.toString();
+
+
+    }
 
 }
+
+
+
