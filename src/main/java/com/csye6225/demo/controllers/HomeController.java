@@ -48,6 +48,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.time.Instant;
 import java.util.Date;
 import java.util.List;
 
@@ -118,10 +119,14 @@ public class HomeController {
 
     DynamoDBMapper mapper = new DynamoDBMapper(client);
 
+    long now = Instant.now().getEpochSecond(); // unix time
+    long ttl = 20 * 60 ; // 24 hours in sec
+
     ProductInfo c = new ProductInfo();
-    c.setId(String.valueOf(100));
-    c.setCost("1000");
-    c.setMsrp("1250");
+    c.setId(String.valueOf(200));
+    c.setCost("1550");
+    c.setMsrp("1750");
+    c.setTtl(ttl + now);
 
 
     mapper.save(c);
