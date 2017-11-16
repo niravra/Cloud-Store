@@ -560,7 +560,7 @@
 			"Properties": {
 				"Code": {
 					"S3Bucket": "code-deploy.csye6225-fall2017.karn.com",
-					"S3Key": "csye6225-aws-lambda-0.0.1.zip"
+					"S3Key": "csye6225-aws-lambda-master.zip"
 				},
 				"Role": {
 					"Fn::GetAtt": [
