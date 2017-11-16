@@ -552,29 +552,6 @@ public class TaskController {
 
     }
 
-    @RequestMapping(value = "/forgot-password", method = RequestMethod.POST, produces = {"application/json"})
-    @ResponseBody
-    public String forgotPassword(HttpServletRequest httpRequest, HttpServletResponse response) {
-        JsonArray jsonArray = new JsonArray();
-        JsonObject jsonObject = new JsonObject();
-        String[] headValue = HeaderCheck(httpRequest);
-        boolean auth = checkAuth(headValue[0], headValue[1]);
-
-        if (headValue.equals(null)) {
-            jsonObject.addProperty("message", "The Basic Auth is not provided");
-            return jsonObject.toString();
-        }
-
-
-        if (auth) {
-
-        }
-        response.setStatus(201, "OK");
-        return jsonArray.toString();
-
-
-    }
-
 }
 
 

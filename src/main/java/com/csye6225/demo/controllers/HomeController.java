@@ -47,6 +47,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import com.amazonaws.services.sns.AmazonSNS;
+import com.amazonaws.services.sns.AmazonSNSClient;
+import com.amazonaws.services.sns.AmazonSNSClientBuilder;
+import com.amazonaws.services.sns.model.CreateTopicRequest;
+import com.amazonaws.services.sns.model.CreateTopicResult;
+import com.amazonaws.services.sns.model.PublishRequest;
+import com.amazonaws.services.sns.model.PublishResult;
 
 import java.time.Instant;
 import java.util.Date;
@@ -264,6 +271,27 @@ public class HomeController {
     tableRequest.setProvisionedThroughput(
             new ProvisionedThroughput(1L, 1L));
     amazonDynamoDB.createTable(tableRequest);
+  }
+
+  @RequestMapping(value = "/forgot-password", method = RequestMethod.POST, produces = "application/json")
+  @ResponseBody
+  public String passwordReset(@RequestParam(value = "username") String username){
+    JsonObject object = new JsonObject();
+    List<Person> user = personDao.findByName(username);
+    object.addProperty("message: ","A mail with a reset link has been sent to: "+ username);
+
+    if(user == null){
+      return object.toString();
+    }
+
+    AmazonSNS sns = AmazonSNSClientBuilder.standard().withRegion(Regions.US_EAST_1).build();
+    CreateTopicResult topicResult = sns.createTopic("SESTopic");
+
+    String arn = topicResult.getTopicArn();//obj.get("TopicArn").getAsString();
+    PublishRequest publishRequest = new PublishRequest(arn,""+username+","+user.get(0).getUserId());
+    PublishResult publishResult = sns.publish(publishRequest);
+
+    return object.toString();
   }
 }
 
