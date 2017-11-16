@@ -23,7 +23,7 @@ targetCompatibility = 1.8
 
 dependencyManagement {
     imports {
-        mavenBom 'com.amazonaws:aws-java-sdk-bom:1.11.122'
+        mavenBom 'com.amazonaws:aws-java-sdk-bom:1.11.221'
     }
 }
 
@@ -67,6 +67,7 @@ dependencies {
 
     compile 'com.amazonaws:aws-java-sdk-s3'
     compile 'com.amazonaws:aws-java-sdk-dynamodb'
+    compile 'com.amazonaws:aws-java-sdk-sns'
 
 
     runtime('org.springframework.boot:spring-boot-devtools')
