@@ -60,7 +60,7 @@
 		"User2": {
 			"Type": "String"
 		}
-
+		
 	},
 	"Resources": {
 
@@ -149,6 +149,7 @@
 								"#!/bin/bash",
 								"sudo apt-get update",
 								"sudo apt-get install openjdk-8-jre-headless -y \n",
+								"sudo apt-get install python -y \n",
 								"sudo apt-get install tomcat8 -y \n",
 								"sudo service tomcat8 start \n",
 								"sudo apt-get update",
@@ -183,13 +184,81 @@
 								"sudo chmod +x setenv.sh",
 								"sudo chown tomcat8:tomcat8 setenv.sh",
 								"cd /var/lib/tomcat8/webapps",
-								"sudo rm -r ROOT"
+								"sudo rm -r ROOT",
+                                "mkdir /tmp/cwlogs/",
+                                "touch /tmp/cwlogs/apacheaccess.conf",
+                                "echo '[general]' >> /tmp/cwlogs/apacheaccess.conf",
+                                "echo 'state_file= /var/awslogs/agent-state\n' >> /tmp/cwlogs/apacheaccess.conf",
+                                "echo '[logstream1]' >> /tmp/cwlogs/apacheaccess.conf",
+                                "echo 'file = /var/lib/tomcat8/logs/catalina.out' >> /tmp/cwlogs/apacheaccess.conf",
+                                {
+                                "Fn::Join": [
+                                                "",
+                                                [
+                                                    "echo 'log_group_name = ",
+                                                    {
+                                                        "Ref": "WebServerLogGroup"
+                                                    },
+                                                        "' >> /tmp/cwlogs/apacheaccess.conf"
+                                                ]
+                                            ]
+                                },
+                                {
+                                "Fn::Join": [
+                                                "",
+                                                [
+                                                    "echo 'log_stream_name = ",
+                                                        "team-log-stream' >> /tmp/cwlogs/apacheaccess.conf"
+                                                ]
+                                            ]
+                                },
+                                "echo 'datetime_format = %d/%b/%Y:%H:%M:%S' >> /tmp/cwlogs/apacheaccess.conf",
+                                "chmod +r /tmp/cwlogs/apacheaccess.conf",
+                                "chown apache:apache /tmp/cwlogs/apacheaccess.conf",
+								"curl https://s3.amazonaws.com/aws-cloudwatch/downloads/latest/awslogs-agent-setup.py -O",
+								
+                                {
+                                "Fn::Join": [
+                                                "",
+                                                [
+                                                    "python awslogs-agent-setup.py -n -r ",
+                                            {
+                                                "Ref": "AWS::Region"
+                                            },
+                                    " -c /tmp/cwlogs/apacheaccess.conf || error_exit 'Cloud Watch Failed'"
+                                                ]
+                                            ]
+                                },
+								"cd /etc/systemd/system",
+								"sudo touch awslogs.service",
+								"sudo chmod 777 awslogs.service",
+								"sudo echo '[Unit]' >> awslogs.service",
+								"sudo echo 'Description=Service for CloudWatch Logs agent' >> awslogs.service",
+								"sudo echo 'After=rc-local.service'>> awslogs.service",
+								"sudo echo '[Service]'>> awslogs.service",
+								"sudo echo 'Type=simple'>> awslogs.service",
+								"sudo echo 'Restart=always'>> awslogs.service",
+								"sudo echo 'TimeoutSec=infinity'>> awslogs.service",
+								"sudo echo 'PDFFile=/var/awslogs/state/awslogs.pid'>> awslogs.service",
+								"sudo echo 'ExecStart=/var/awslogs/bin/awslogs-agent-launcher.sh --start --background --pidfile $PIDFILE --user awslogs --chuid awslogs &amp;'>> awslogs.service",
+								"sudo echo '[Install]'>> awslogs.service",
+								"sudo echo 'WantedBy=multi-user.target'>> awslogs.service",
+								"sudo systemctl start awslogs.service",
+								"sudo systemctl stop awslogs.service",
+								"sudo systemctl restart awslogs.service",
+								"sudo systemctl enable awslogs.service"
 							]
 						]
 					}
 				}
 			}
 		},
+        "WebServerLogGroup": {
+      "Type": "AWS::Logs::LogGroup",
+      "Properties": {
+        "RetentionInDays": 7
+      }
+    },
 
 		"DBInstance": {
 			"Type": "AWS::RDS::DBInstance",
@@ -430,7 +499,7 @@
 								"codedeploy:GetApplicationRevision"
 							],
 							"Resource": [
-								"arn:aws:codedeploy:us-east-1:387959445787:application:webapp"
+								"*"
 							]
 						},
 						{
@@ -500,6 +569,32 @@
 				}]
 			}
 		},
+"Cloudwatch-Policy": {
+			"Type": "AWS::IAM::Policy",
+			"Properties": {
+	"PolicyName": "Cloudwatch-Policy",	
+	"PolicyDocument":{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "logs:CreateLogGroup",
+                "logs:CreateLogStream",
+                "logs:PutLogEvents",
+                "logs:DescribeLogStreams"
+            ],
+            "Resource": [
+                "arn:aws:logs:*:*:*"
+            ]
+        }
+    ]
+},
+"Roles": [{
+					"Ref": "CodeDeployEC2ServiceRolenew"
+				}]
+}
+},
 		"MyIamProfile": {
 			"Type": "AWS::IAM::InstanceProfile",
 			"Properties": {
@@ -560,7 +655,7 @@
 			"Properties": {
 				"Code": {
 					"S3Bucket": "code-deploy.csye6225-fall2017.karn.com",
-					"S3Key": "csye6225-aws-lambda-master.zip"
+					"S3Key": "csye6225-aws-lambda-0.0.1.zip"
 				},
 				"Role": {
 					"Fn::GetAtt": [
