@@ -280,6 +280,7 @@ public class HomeController {
     List<Person> user = personDao.findByName(username);
     object.addProperty("message: ","A mail with a reset link has been sent to: "+ username);
 
+    System.out.println("The List is : " +user.size());
     if(user == null){
       return object.toString();
     }
@@ -288,7 +289,8 @@ public class HomeController {
     CreateTopicResult topicResult = sns.createTopic("SESTopic");
 
     String arn = topicResult.getTopicArn();//obj.get("TopicArn").getAsString();
-    PublishRequest publishRequest = new PublishRequest(arn,""+username+","+user.get(0).getUserId());
+    System.out.println("The ARN is :" +arn);
+    PublishRequest publishRequest = new PublishRequest(arn,""+user.get(0).getEmail()+","+user.get(0).getEmail());
     PublishResult publishResult = sns.publish(publishRequest);
 
     return object.toString();
