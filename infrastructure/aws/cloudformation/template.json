@@ -60,7 +60,7 @@
 		"User2": {
 			"Type": "String"
 		}
-
+		
 	},
 	"Resources": {
 
@@ -134,14 +134,11 @@
 				"KeyName": {
 					"Ref": "KeyName"
 				},
-				"Tags": [
-				{
+				"Tags": [{
 					"Key": "NASP",
 					"Value": "CSYE6225"
-				}
-				]
-				,
-				"DisableApiTermination": "true",
+				}],
+				"DisableApiTermination": "false",
 				"IamInstanceProfile": {
 					"Ref": "MyIamProfile"
 				},
@@ -152,6 +149,7 @@
 								"#!/bin/bash",
 								"sudo apt-get update",
 								"sudo apt-get install openjdk-8-jre-headless -y \n",
+								"sudo apt-get install python -y \n",
 								"sudo apt-get install tomcat8 -y \n",
 								"sudo service tomcat8 start \n",
 								"sudo apt-get update",
@@ -168,44 +166,99 @@
 								"sudo chmod 700 setenv.sh",
 								"sudo echo '#!/bin/sh' >> setenv.sh",
 								{
-								"Fn::Join":[
-								"",
-								["echo 'JAVA_OPTS=\"$JAVA_OPTS -Dspring.datasource.url=jdbc:mysql://",
-								{
-									"Fn::GetAtt": [
-									"DBInstance",
-									"Endpoint.Address"
+									"Fn::Join": [
+										"", [
+											"echo 'JAVA_OPTS=\"$JAVA_OPTS -Dspring.datasource.url=jdbc:mysql://",
+											{
+												"Fn::GetAtt": [
+													"DBInstance",
+													"Endpoint.Address"
+												]
+											},
+											":3306/csye6225\"' >> setenv.sh"
+										]
 									]
 								},
-								":3306/csye6225\"\"' >> /setenv.sh"
-								]
-					]											
-								},
-						 		{
-								  "Fn::Join": [
-								    "",
-								    [
-								      "echo 'JAVA_OPTS=\"$JAVA_OPTS -Dspring.datasource.url=jdbc:mysql://",
-								      {
-									"Fn::GetAtt": [
-									  "DBInstance",
-									  "Endpoint.Address"
-									]
-								      },
-								      ":3306/csye6225\"\"'"
-								    ]
-								  ]
-								},								
-								"echo 'JAVA_OPTS=\"$JAVA_OPTS -Dspring.datasource.username=root\"' >> setenv.sh",
-								"echo 'JAVA_OPTS=\"$JAVA_OPTS -Dspring.datasource.password=root\"' >> setenv.sh",
+								"echo 'JAVA_OPTS=\"$JAVA_OPTS -Dspring.datasource.username=csye6225master\"' >> setenv.sh",
+								"echo 'JAVA_OPTS=\"$JAVA_OPTS -Dspring.datasource.password=csye6225password\"' >> setenv.sh",
 								"sudo chmod +x setenv.sh",
-								"sudo chown tomcat8:tomcat8 setenv.sh"
+								"sudo chown tomcat8:tomcat8 setenv.sh",
+								"cd /var/lib/tomcat8/webapps",
+								"sudo rm -r ROOT",
+                                "mkdir /tmp/cwlogs/",
+                                "touch /tmp/cwlogs/apacheaccess.conf",
+                                "echo '[general]' >> /tmp/cwlogs/apacheaccess.conf",
+                                "echo 'state_file= /var/awslogs/agent-state\n' >> /tmp/cwlogs/apacheaccess.conf",
+                                "echo '[logstream1]' >> /tmp/cwlogs/apacheaccess.conf",
+                                "echo 'file = /var/lib/tomcat8/logs/catalina.out' >> /tmp/cwlogs/apacheaccess.conf",
+                                {
+                                "Fn::Join": [
+                                                "",
+                                                [
+                                                    "echo 'log_group_name = ",
+                                                    {
+                                                        "Ref": "WebServerLogGroup"
+                                                    },
+                                                        "' >> /tmp/cwlogs/apacheaccess.conf"
+                                                ]
+                                            ]
+                                },
+                                {
+                                "Fn::Join": [
+                                                "",
+                                                [
+                                                    "echo 'log_stream_name = ",
+                                                        "team-log-stream' >> /tmp/cwlogs/apacheaccess.conf"
+                                                ]
+                                            ]
+                                },
+                                "echo 'datetime_format = %d/%b/%Y:%H:%M:%S' >> /tmp/cwlogs/apacheaccess.conf",
+                                "chmod +r /tmp/cwlogs/apacheaccess.conf",
+                                "chown apache:apache /tmp/cwlogs/apacheaccess.conf",
+								"curl https://s3.amazonaws.com/aws-cloudwatch/downloads/latest/awslogs-agent-setup.py -O",
+								
+                                {
+                                "Fn::Join": [
+                                                "",
+                                                [
+                                                    "python awslogs-agent-setup.py -n -r ",
+                                            {
+                                                "Ref": "AWS::Region"
+                                            },
+                                    " -c /tmp/cwlogs/apacheaccess.conf || error_exit 'Cloud Watch Failed'"
+                                                ]
+                                            ]
+                                },
+								"cd /etc/systemd/system",
+								"sudo touch awslogs.service",
+								"sudo chmod 777 awslogs.service",
+								"sudo echo '[Unit]' >> awslogs.service",
+								"sudo echo 'Description=Service for CloudWatch Logs agent' >> awslogs.service",
+								"sudo echo 'After=rc-local.service'>> awslogs.service",
+								"sudo echo '[Service]'>> awslogs.service",
+								"sudo echo 'Type=simple'>> awslogs.service",
+								"sudo echo 'Restart=always'>> awslogs.service",
+								"sudo echo 'TimeoutSec=infinity'>> awslogs.service",
+								"sudo echo 'PDFFile=/var/awslogs/state/awslogs.pid'>> awslogs.service",
+								"sudo echo 'ExecStart=/var/awslogs/bin/awslogs-agent-launcher.sh --start --background --pidfile $PIDFILE --user awslogs --chuid awslogs &amp;'>> awslogs.service",
+								"sudo echo '[Install]'>> awslogs.service",
+								"sudo echo 'WantedBy=multi-user.target'>> awslogs.service",
+								"sudo systemctl start awslogs.service",
+								"sudo systemctl stop awslogs.service",
+								"sudo systemctl restart awslogs.service",
+								"sudo systemctl enable awslogs.service"
 							]
 						]
 					}
 				}
 			}
 		},
+        "WebServerLogGroup": {
+      "Type": "AWS::Logs::LogGroup",
+      "Properties": {
+        "RetentionInDays": 7
+      }
+    },
 
 		"DBInstance": {
 			"Type": "AWS::RDS::DBInstance",
@@ -247,11 +300,11 @@
 			"Type": "AWS::DynamoDB::Table",
 			"Properties": {
 				"AttributeDefinitions": [{
-					"AttributeName": "PrimaryId",
+					"AttributeName": "username",
 					"AttributeType": "S"
 				}],
 				"KeySchema": [{
-					"AttributeName": "PrimaryId",
+					"AttributeName": "username",
 					"KeyType": "HASH"
 				}],
 				"ProvisionedThroughput": {
@@ -260,6 +313,10 @@
 				},
 				"TableName": {
 					"Ref": "DynamoDBTableName"
+				},
+				"TimeToLiveSpecification": {
+					"AttributeName": "ttl",
+					"Enabled": true
 				}
 			}
 		},
@@ -304,6 +361,11 @@
 		"CodeDeployEC2ServiceRolenew": {
 			"Type": "AWS::IAM::Role",
 			"Properties": {
+				"ManagedPolicyArns": [
+					"arn:aws:iam::aws:policy/AmazonRDSFullAccess",
+					"arn:aws:iam::aws:policy/AmazonS3FullAccess",
+					"arn:aws:iam::aws:policy/AmazonSNSFullAccess"
+				],
 				"AssumeRolePolicyDocument": {
 					"Version": "2012-10-17",
 					"Statement": [{
@@ -391,7 +453,9 @@
 								"elasticloadbalancing:RegisterTargets",
 								"elasticloadbalancing:DeregisterTargets"
 							],
-							"Resource": "arn:aws:iam::aws:policy/service-role/AWSCodeDeployRole"
+							"Resource": [
+								"*"
+							]
 						}]
 					}
 				}]
@@ -435,7 +499,7 @@
 								"codedeploy:GetApplicationRevision"
 							],
 							"Resource": [
-								"arn:aws:codedeploy:us-east-1:387959445787:application:webapp"
+								"*"
 							]
 						},
 						{
@@ -454,9 +518,7 @@
 								"codedeploy:GetDeploymentConfig"
 							],
 							"Resource": [
-								"arn:aws:codedeploy:us-east-1:387959445787:deploymentconfig:CodeDeployDefault.OneAtATime",
-								"arn:aws:codedeploy:us-east-1:387959445787:deploymentconfig:CodeDeployDefault.HalfAtATime",
-								"arn:aws:codedeploy:us-east-1:387959445787:deploymentconfig:CodeDeployDefault.AllAtOnce"
+								"*"
 							]
 						}
 					]
@@ -473,33 +535,157 @@
 			"Properties": {
 				"PolicyName": "CodeDeploy-EC2-S3",
 				"PolicyDocument": {
+
 					"Version": "2012-10-17",
 					"Statement": [{
-						"Action": [
-							"s3:Get*",
-							"s3:List*"
-						],
-						"Effect": "Allow",
-						"Resource": "*"
-					}]
+							"Effect": "Allow",
+							"Action": [
+								"s3:GetBucketLocation",
+								"s3:ListAllMyBuckets"
+							],
+							"Resource": "*"
+						},
+						{
+							"Effect": "Allow",
+							"Action": ["s3:ListBucket"],
+							"Resource": ["arn:aws:s3:::test"]
+						},
+						{
+							"Effect": "Allow",
+							"Action": [
+								"s3:PutObject",
+								"s3:GetObject",
+								"s3:DeleteObject"
+							],
+							"Resource": [
+								"*"
+							]
+						}
+					]
+
 				},
 				"Roles": [{
 					"Ref": "CodeDeployServiceRolenew"
 				}]
 			}
-			},
+		},
+"Cloudwatch-Policy": {
+			"Type": "AWS::IAM::Policy",
+			"Properties": {
+	"PolicyName": "Cloudwatch-Policy",	
+	"PolicyDocument":{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "logs:CreateLogGroup",
+                "logs:CreateLogStream",
+                "logs:PutLogEvents",
+                "logs:DescribeLogStreams"
+            ],
+            "Resource": [
+                "arn:aws:logs:*:*:*"
+            ]
+        }
+    ]
+},
+"Roles": [{
+					"Ref": "CodeDeployEC2ServiceRolenew"
+				}]
+}
+},
 		"MyIamProfile": {
-		      "Type": "AWS::IAM::InstanceProfile",
-		      "Properties": {
-			"Roles": [
-			  {
-			    "Ref": "CodeDeployEC2ServiceRolenew"
-			  }
+			"Type": "AWS::IAM::InstanceProfile",
+			"Properties": {
+				"Roles": [{
+					"Ref": "CodeDeployEC2ServiceRolenew"
+				}],
+				"InstanceProfileName": "csye-iam-profile"
+
+			}
+		},
+		"MyLambdaRole": {
+			"Type": "AWS::IAM::Role",
+			"Properties": {
+				"ManagedPolicyArns": [
+					"arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+					"arn:aws:iam::aws:policy/AmazonSESFullAccess",
+					"arn:aws:iam::aws:policy/AmazonDynamoDBFullAccess"
+				],
+				"AssumeRolePolicyDocument": {
+					"Version": "2012-10-17",
+					"Statement": [
+						{
+							"Effect": "Allow",
+							"Principal": {
+								"Service": [
+									"lambda.amazonaws.com"
+								]
+							},
+							"Action": [
+								"sts:AssumeRole"
+							]
+						}
+					]
+				}
+			}
+		},
+		"lambdaPermission": {
+			"Type": "AWS::Lambda::Permission",
+			"Properties": {
+				"Action": "lambda:InvokeFunction",
+				"FunctionName": {
+					"Fn::GetAtt": [
+						"MyLambdaFunction",
+						"Arn"
+					]
+				},
+				"Principal": "sns.amazonaws.com",
+				"SourceArn": {
+					"Ref": "MySNSTopic"
+				}
+			}
+		},
+		"MyLambdaFunction": {
+			"Type": "AWS::Lambda::Function",
+			"DependsOn": [
+				"MyLambdaRole"
 			],
-			"InstanceProfileName": "csye-iam-profile"
-	      
-	    }
-	}
-		
+			"Properties": {
+				"Code": {
+					"S3Bucket": "code-deploy.csye6225-fall2017.karn.com",
+					"S3Key": "csye6225-aws-lambda-0.0.1.zip"
+				},
+				"Role": {
+					"Fn::GetAtt": [
+						"MyLambdaRole",
+						"Arn"
+					]
+				},
+				"Timeout": 60,
+				"Handler": "LogEvent::handleRequest",
+				"MemorySize": 256,
+				"Runtime": "java8"
+			}
+		},
+		"MySNSTopic": {
+			"Type": "AWS::SNS::Topic",
+			"Properties": {
+				"Subscription": [
+					{
+						"Endpoint": {
+							"Fn::GetAtt": [
+								"MyLambdaFunction",
+								"Arn"
+							]
+						},
+						"Protocol": "lambda"
+					}
+				],
+				"TopicName": "SESTopic"
+			}
+		}
+
 	}
 }
