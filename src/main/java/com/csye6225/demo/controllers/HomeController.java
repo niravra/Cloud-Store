@@ -47,7 +47,15 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import com.amazonaws.services.sns.AmazonSNS;
+import com.amazonaws.services.sns.AmazonSNSClient;
+import com.amazonaws.services.sns.AmazonSNSClientBuilder;
+import com.amazonaws.services.sns.model.CreateTopicRequest;
+import com.amazonaws.services.sns.model.CreateTopicResult;
+import com.amazonaws.services.sns.model.PublishRequest;
+import com.amazonaws.services.sns.model.PublishResult;
 
+import java.time.Instant;
 import java.util.Date;
 import java.util.List;
 
@@ -118,10 +126,14 @@ public class HomeController {
 
     DynamoDBMapper mapper = new DynamoDBMapper(client);
 
+    long now = Instant.now().getEpochSecond(); // unix time
+    long ttl = 20 * 60 ; // 24 hours in sec
+
     ProductInfo c = new ProductInfo();
-    c.setId(String.valueOf(100));
-    c.setCost("1000");
-    c.setMsrp("1250");
+    c.setId(String.valueOf(200));
+    c.setCost("1550");
+    c.setMsrp("1750");
+    c.setTtl(ttl + now);
 
 
     mapper.save(c);
@@ -259,6 +271,29 @@ public class HomeController {
     tableRequest.setProvisionedThroughput(
             new ProvisionedThroughput(1L, 1L));
     amazonDynamoDB.createTable(tableRequest);
+  }
+
+  @RequestMapping(value = "/forgot-password", method = RequestMethod.POST, produces = "application/json")
+  @ResponseBody
+  public String passwordReset(@RequestParam(value = "username") String username){
+    JsonObject object = new JsonObject();
+    List<Person> user = personDao.findByName(username);
+    object.addProperty("message: ","A mail with a reset link has been sent to: "+ username);
+
+    System.out.println("The List is : " +user.size());
+    if(user == null){
+      return object.toString();
+    }
+
+    AmazonSNS sns = AmazonSNSClientBuilder.standard().withRegion(Regions.US_EAST_1).build();
+    CreateTopicResult topicResult = sns.createTopic("SESTopic");
+
+    String arn = topicResult.getTopicArn();//obj.get("TopicArn").getAsString();
+    System.out.println("The ARN is :" +arn);
+    PublishRequest publishRequest = new PublishRequest(arn,""+user.get(0).getEmail()+","+user.get(0).getEmail());
+    PublishResult publishResult = sns.publish(publishRequest);
+
+    return object.toString();
   }
 }
 
