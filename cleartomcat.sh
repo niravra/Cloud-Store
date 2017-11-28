@@ -1,8 +1,5 @@
 sudo systemctl stop awslogs.service
 
 cd /var/awslogs/etc
+sudo rm awslogs.conf
 
-if [-f "awslogs.conf"]
-then
-	sudo rm awslogs.conf
-fi

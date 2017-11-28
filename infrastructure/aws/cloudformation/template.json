@@ -569,10 +569,10 @@
 				}]
 			}
 		},
-"Cloudwatch-Policy": {
+"CloudwatchPolicy": {
 			"Type": "AWS::IAM::Policy",
 			"Properties": {
-	"PolicyName": "Cloudwatch-Policy",	
+	"PolicyName": "CloudwatchPolicy",	
 	"PolicyDocument":{
     "Version": "2012-10-17",
     "Statement": [

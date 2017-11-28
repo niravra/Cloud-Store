@@ -506,8 +506,8 @@ public class TaskController {
 
 //                    AmazonS3 s3client = new AmazonS3Client(new ProfileCredentialsProvider());
                     AmazonS3 s3client = new AmazonS3Client(DefaultAWSCredentialsProviderChain.getInstance());
+
                     ObjectListing objectListing = s3client.listObjects("csye6225-fall2017-csye-nasp.com");
-=======
                //     AmazonS3 s3client = new AmazonS3Client(DefaultAWSCredentialsProviderChain.getInstance());
                //     ObjectListing objectListing = s3client.listObjects("csye6225nasp");
                   //  while (true) {
@@ -516,6 +516,15 @@ public class TaskController {
                    //         S3ObjectSummary summary = (S3ObjectSummary) iterator.next();
                      //       s3client.deleteObject("csye6225nasp", nn.getContent());
 
+
+                   // ObjectListing objectListing = s3client.listObjects("csye6225-fall2017-csye-nasp.com");
+                    //AmazonS3 s3client = new AmazonS3Client(DefaultAWSCredentialsProviderChain.getInstance());
+                   // ObjectListing objectListing = s3client.listObjects("csye6225nasp");
+                  //  while (true) {
+                   //     for (Iterator<?> iterator = objectListing.getObjectSummaries().iterator();
+                    //         iterator.hasNext(); ) {
+                    //        S3ObjectSummary summary = (S3ObjectSummary) iterator.next();
+                    //        s3client.deleteObject("csye6225nasp", nn.getContent());
 
                     //  while (true) {
                     for (Iterator<?> iterator = objectListing.getObjectSummaries().iterator();
