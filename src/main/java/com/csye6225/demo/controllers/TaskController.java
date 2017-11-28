@@ -8,7 +8,6 @@ package com.csye6225.demo.controllers;
 
 import java.io.File;
 import java.io.IOException;
-
 import com.amazonaws.auth.DefaultAWSCredentialsProviderChain;
 import com.amazonaws.auth.profile.ProfileCredentialsProvider;
 import com.amazonaws.services.s3.AmazonS3;
@@ -328,7 +327,7 @@ public class TaskController {
                 // filepath.concat(name);
                 // files.transferTo(new File(file_Path));
 
-//                AmazonS3 s3client = new AmazonS3Client(new ProfileCredentialsProvider());
+
                 AmazonS3 s3client = new AmazonS3Client(DefaultAWSCredentialsProviderChain.getInstance());
                 Bucket b = null;
 
@@ -509,12 +508,22 @@ public class TaskController {
                     AmazonS3 s3client = new AmazonS3Client(DefaultAWSCredentialsProviderChain.getInstance());
                    // ObjectListing objectListing = s3client.listObjects("csye6225-fall2017-csye-nasp.com");
                     //AmazonS3 s3client = new AmazonS3Client(DefaultAWSCredentialsProviderChain.getInstance());
-                    ObjectListing objectListing = s3client.listObjects("csye6225nasp");
+                   // ObjectListing objectListing = s3client.listObjects("csye6225nasp");
                   //  while (true) {
-                        for (Iterator<?> iterator = objectListing.getObjectSummaries().iterator();
-                             iterator.hasNext(); ) {
-                            S3ObjectSummary summary = (S3ObjectSummary) iterator.next();
-                            s3client.deleteObject("csye6225nasp", nn.getContent());
+                   //     for (Iterator<?> iterator = objectListing.getObjectSummaries().iterator();
+                    //         iterator.hasNext(); ) {
+                     //       S3ObjectSummary summary = (S3ObjectSummary) iterator.next();
+                      //      s3client.deleteObject("csye6225nasp", nn.getContent());
+
+                    ObjectListing objectListing = s3client.listObjects("csye6225-fall2017-csye-nasp.com");
+
+               //     AmazonS3 s3client = new AmazonS3Client(DefaultAWSCredentialsProviderChain.getInstance());
+               //     ObjectListing objectListing = s3client.listObjects("csye6225nasp");
+                  //  while (true) {
+               //         for (Iterator<?> iterator = objectListing.getObjectSummaries().iterator();
+                 //            iterator.hasNext(); ) {
+                   //         S3ObjectSummary summary = (S3ObjectSummary) iterator.next();
+                     //       s3client.deleteObject("csye6225nasp", nn.getContent());
 
                     //  while (true) {
                     for (Iterator<?> iterator = objectListing.getObjectSummaries().iterator();
