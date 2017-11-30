@@ -66,9 +66,12 @@
 		"User2": {
 			"Type": "String"
 		},
-		"Region":{
+		"Region": {
 			"Type": "String"
-		}		
+		},
+		"AvailabilityZone":{
+			"Type": "String"
+		}
 	},
 	"Resources": {
 
@@ -193,50 +196,47 @@
 								"sudo chown tomcat8:tomcat8 setenv.sh",
 								"cd /var/lib/tomcat8/webapps",
 								"sudo rm -r ROOT",
-                                "mkdir /tmp/cwlogs/",
-                                "touch /tmp/cwlogs/apacheaccess.conf",
-                                "echo '[general]' >> /tmp/cwlogs/apacheaccess.conf",
-                                "echo 'state_file= /var/awslogs/agent-state\n' >> /tmp/cwlogs/apacheaccess.conf",
-                                "echo '[logstream1]' >> /tmp/cwlogs/apacheaccess.conf",
-                                "echo 'file = /var/lib/tomcat8/logs/catalina.out' >> /tmp/cwlogs/apacheaccess.conf",
-                                {
-                                "Fn::Join": [
-                                                "",
-                                                [
-                                                    "echo 'log_group_name = ",
-                                                    {
-                                                        "Ref": "WebServerLogGroup"
-                                                    },
-                                                        "' >> /tmp/cwlogs/apacheaccess.conf"
-                                                ]
-                                            ]
-                                },
-                                {
-                                "Fn::Join": [
-                                                "",
-                                                [
-                                                    "echo 'log_stream_name = ",
-                                                        "team-log-stream' >> /tmp/cwlogs/apacheaccess.conf"
-                                                ]
-                                            ]
-                                },
-                                "echo 'datetime_format = %d/%b/%Y:%H:%M:%S' >> /tmp/cwlogs/apacheaccess.conf",
-                                "chmod +r /tmp/cwlogs/apacheaccess.conf",
-                                "chown apache:apache /tmp/cwlogs/apacheaccess.conf",
+								"mkdir /tmp/cwlogs/",
+								"touch /tmp/cwlogs/apacheaccess.conf",
+								"echo '[general]' >> /tmp/cwlogs/apacheaccess.conf",
+								"echo 'state_file= /var/awslogs/agent-state\n' >> /tmp/cwlogs/apacheaccess.conf",
+								"echo '[logstream1]' >> /tmp/cwlogs/apacheaccess.conf",
+								"echo 'file = /var/lib/tomcat8/logs/catalina.out' >> /tmp/cwlogs/apacheaccess.conf",
+								{
+									"Fn::Join": [
+										"", [
+											"echo 'log_group_name = ",
+											{
+												"Ref": "WebServerLogGroup"
+											},
+											"' >> /tmp/cwlogs/apacheaccess.conf"
+										]
+									]
+								},
+								{
+									"Fn::Join": [
+										"", [
+											"echo 'log_stream_name = ",
+											"team-log-stream' >> /tmp/cwlogs/apacheaccess.conf"
+										]
+									]
+								},
+								"echo 'datetime_format = %d/%b/%Y:%H:%M:%S' >> /tmp/cwlogs/apacheaccess.conf",
+								"chmod +r /tmp/cwlogs/apacheaccess.conf",
+								"chown apache:apache /tmp/cwlogs/apacheaccess.conf",
 								"curl https://s3.amazonaws.com/aws-cloudwatch/downloads/latest/awslogs-agent-setup.py -O",
-								
-                                {
-                                "Fn::Join": [
-                                                "",
-                                                [
-                                                    "python awslogs-agent-setup.py -n -r ",
-                                            {
-                                                "Ref": "AWS::Region"
-                                            },
-                                    " -c /tmp/cwlogs/apacheaccess.conf || error_exit 'Cloud Watch Failed'"
-                                                ]
-                                            ]
-                                },
+
+								{
+									"Fn::Join": [
+										"", [
+											"python awslogs-agent-setup.py -n -r ",
+											{
+												"Ref": "AWS::Region"
+											},
+											" -c /tmp/cwlogs/apacheaccess.conf || error_exit 'Cloud Watch Failed'"
+										]
+									]
+								},
 								"cd /etc/systemd/system",
 								"sudo touch awslogs.service",
 								"sudo chmod 777 awslogs.service",
@@ -261,43 +261,38 @@
 				}
 			}
 		},
-        "WebServerLogGroup": {
-      "Type": "AWS::Logs::LogGroup",
-      "Properties": {
-        "RetentionInDays": 7
-      }
-    },
-	"WebServerGroup":{
-		"Type": "AWS::AutoScaling::AutoScalingGroup",
-		"Properties": {
-			"AvailabilityZones":[{
-				"Ref" : "Region"
-				}],
-			"VPCZoneIdentifier":
-			[
-				{
-                    "Ref": "SubnetId"
-                },
-                {
-                    "Ref": "SubnetId2"
-                },
-		{
-                    "Ref": "SubnetId3"
-                },
-		{
-                    "Ref": "SubnetId4"
-                }
-			],
-			"InstanceId": {
-				"Ref":  "EC2Instance"
-																					
-				},
-			"MinSize": "3",
-			"MaxSize": "3"
+		"WebServerLogGroup": {
+			"Type": "AWS::Logs::LogGroup",
+			"Properties": {
+				"RetentionInDays": 7
 			}
-			
 		},
+		"WebServerGroup": {
+			"Type": "AWS::AutoScaling::AutoScalingGroup",
+			"Properties": {
+				"AvailabilityZones" : { "Fn::GetAZs" : { "Ref" : "AWS::Region" } },
+				"InstanceId": {
+					"Ref": "EC2Instance"
 
+				},
+				"MinSize": "3",
+				"MaxSize": "3"
+			}
+
+		},
+		"ElasticLoadBalancer": {
+			"Type": "AWS::ElasticLoadBalancing::LoadBalancer",
+			"Properties": {
+				"AvailabilityZones": [{
+					"Ref": "AvailabilityZone"
+				}],
+				"Listeners": [{
+					"LoadBalancerPort": "80",
+					"InstancePort": "80",
+					"Protocol": "HTTP"
+				}]
+			}
+		},
 		"DBInstance": {
 			"Type": "AWS::RDS::DBInstance",
 			"Properties": {
@@ -607,32 +602,30 @@
 				}]
 			}
 		},
-"CloudwatchPolicy": {
+		"CloudwatchPolicy": {
 			"Type": "AWS::IAM::Policy",
 			"Properties": {
-	"PolicyName": "CloudwatchPolicy",	
-	"PolicyDocument":{
-    "Version": "2012-10-17",
-    "Statement": [
-        {
-            "Effect": "Allow",
-            "Action": [
-                "logs:CreateLogGroup",
-                "logs:CreateLogStream",
-                "logs:PutLogEvents",
-                "logs:DescribeLogStreams"
-            ],
-            "Resource": [
-                "arn:aws:logs:*:*:*"
-            ]
-        }
-    ]
-},
-"Roles": [{
+				"PolicyName": "CloudwatchPolicy",
+				"PolicyDocument": {
+					"Version": "2012-10-17",
+					"Statement": [{
+						"Effect": "Allow",
+						"Action": [
+							"logs:CreateLogGroup",
+							"logs:CreateLogStream",
+							"logs:PutLogEvents",
+							"logs:DescribeLogStreams"
+						],
+						"Resource": [
+							"arn:aws:logs:*:*:*"
+						]
+					}]
+				},
+				"Roles": [{
 					"Ref": "CodeDeployEC2ServiceRolenew"
 				}]
-}
-},
+			}
+		},
 		"MyIamProfile": {
 			"Type": "AWS::IAM::InstanceProfile",
 			"Properties": {
@@ -653,19 +646,17 @@
 				],
 				"AssumeRolePolicyDocument": {
 					"Version": "2012-10-17",
-					"Statement": [
-						{
-							"Effect": "Allow",
-							"Principal": {
-								"Service": [
-									"lambda.amazonaws.com"
-								]
-							},
-							"Action": [
-								"sts:AssumeRole"
+					"Statement": [{
+						"Effect": "Allow",
+						"Principal": {
+							"Service": [
+								"lambda.amazonaws.com"
 							]
-						}
-					]
+						},
+						"Action": [
+							"sts:AssumeRole"
+						]
+					}]
 				}
 			}
 		},
@@ -710,17 +701,15 @@
 		"MySNSTopic": {
 			"Type": "AWS::SNS::Topic",
 			"Properties": {
-				"Subscription": [
-					{
-						"Endpoint": {
-							"Fn::GetAtt": [
-								"MyLambdaFunction",
-								"Arn"
-							]
-						},
-						"Protocol": "lambda"
-					}
-				],
+				"Subscription": [{
+					"Endpoint": {
+						"Fn::GetAtt": [
+							"MyLambdaFunction",
+							"Arn"
+						]
+					},
+					"Protocol": "lambda"
+				}],
 				"TopicName": "SESTopic"
 			}
 		}
