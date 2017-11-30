@@ -48,6 +48,12 @@
 		"SubnetId2": {
 			"Type": "String"
 		},
+		"SubnetId3": {
+			"Type": "String"
+		},
+		"SubnetId4": {
+			"Type": "String"
+		},
 		"HostedZoneId": {
 			"Type": "String"
 		},
@@ -59,8 +65,10 @@
 		},
 		"User2": {
 			"Type": "String"
-		}
-		
+		},
+		"Region":{
+			"Type": "String"
+		}		
 	},
 	"Resources": {
 
@@ -259,6 +267,36 @@
         "RetentionInDays": 7
       }
     },
+	"WebServerGroup":{
+		"Type": "AWS::AutoScaling::AutoScalingGroup",
+		"Properties": {
+			"AvailabilityZones":[{
+				"Ref" : "Region"
+				}],
+			"VPCZoneIdentifier":
+			[
+				{
+                    "Ref": "SubnetId"
+                },
+                {
+                    "Ref": "SubnetId2"
+                },
+		{
+                    "Ref": "SubnetId3"
+                },
+		{
+                    "Ref": "SubnetId4"
+                }
+			],
+			"InstanceId": {
+				"Ref":  "EC2Instance"
+																					
+				},
+			"MinSize": "3",
+			"MaxSize": "3"
+			}
+			
+		},
 
 		"DBInstance": {
 			"Type": "AWS::RDS::DBInstance",
