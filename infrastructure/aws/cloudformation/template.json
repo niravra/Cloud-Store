@@ -1,6 +1,6 @@
 {
 	"AWSTemplateFormatVersion": "2010-09-09",
-	"Description": "Sample CloudFormation Template for CSYE 6225 - Fall 2017",
+	"Description": "CloudFormation Template for CSYE 6225 - Fall 2017",
 	"Parameters": {
 		"ImageId": {
 			"Type": "String"
@@ -106,6 +106,74 @@
 						"FromPort": "8080",
 						"ToPort": "8080",
 						"CidrIp": "0.0.0.0/0"
+					},
+					{
+						"IpProtocol": "tcp",
+						"FromPort": "8080",
+						"ToPort": "8080",
+						"SourceSecurityGroupId": {
+							"Fn::GetAtt": [
+								"LoadBalancerSecurityGroup",
+								"GroupId"
+							]
+						}
+					},
+					{
+						"IpProtocol": "tcp",
+						"FromPort": "8080",
+						"ToPort": "8080",
+						"SourceSecurityGroupId": {
+							"Fn::GetAtt": [
+								"LoadBalancerSecurityGroup",
+								"GroupId"
+							]
+						}
+					}
+				]
+			}
+		},
+		"LoadBalancerSecurityGroup": {
+			"Type": "AWS::EC2::SecurityGroup",
+			"Properties": {
+				"GroupName": "csye6225-fall2017-placeHolder-loadBalancer",
+				"GroupDescription": "Rules For LoadBalancer",
+				"VpcId": "placeHolder",
+				"SecurityGroupIngress": [
+					{
+						"IpProtocol": "tcp",
+						"FromPort": "80",
+						"ToPort": "80",
+						"CidrIp": "0.0.0.0/0"
+					},
+					{
+						"IpProtocol": "tcp",
+						"FromPort": "22",
+						"ToPort": "22",
+						"CidrIp": "0.0.0.0/0"
+					},
+					{
+						"IpProtocol": "tcp",
+						"FromPort": "443",
+						"ToPort": "443",
+						"CidrIp": "0.0.0.0/0"
+					},
+					{
+						"IpProtocol": "tcp",
+						"FromPort": "443",
+						"ToPort": "443",
+						"CidrIpv6": "::/0"
+					},
+					{
+						"IpProtocol": "tcp",
+						"FromPort": "8080",
+						"ToPort": "8080",
+						"CidrIpv6": "::/0"
+					},
+					{
+						"IpProtocol": "tcp",
+						"FromPort": "8080",
+						"ToPort": "8080",
+						"CidrIp": "0.0.0.0/0"
 					}
 				]
 			}
@@ -127,427 +195,229 @@
 				}]
 			}
 		},
-		"EC2Instance": {
-			"Type": "AWS::EC2::Instance",
-			"Properties": {
-				"ImageId": {
-					"Ref": "ImageId"
-				},
-				"InstanceType": {
-					"Ref": "InstanceType"
-				},
-				"SecurityGroupIds": [{
-					"Fn::GetAtt": [
-						"SecurityGroup",
-						"GroupId"
-					]
-				}],
-				"KeyName": {
-					"Ref": "KeyName"
-				},
-				"Tags": [{
-					"Key": "NASP",
-					"Value": "CSYE6225"
-				}],
-				"DisableApiTermination": "false",
-				"IamInstanceProfile": {
-					"Ref": "MyIamProfile"
-				},
-				"UserData": {
-					"Fn::Base64": {
-						"Fn::Join": [
-							"\n", [
-								"#!/bin/bash",
-								"sudo apt-get update",
-								"sudo apt-get install openjdk-8-jre-headless -y \n",
-								"sudo apt-get install python -y \n",
-								"sudo apt-get install tomcat8 -y \n",
-								"sudo service tomcat8 start \n",
-								"sudo apt-get update",
-								"sudo apt-get install ruby -y \n",
-								"sudo apt-get install wget \n",
-								"cd /home/ubuntu",
-								"wget https://aws-codedeploy-us-east-1.s3.amazonaws.com/latest/install\n",
-								"sudo chmod +x ./install",
-								"sudo ./install auto \n",
-								"sudo service codedeploy-agent start \n",
-								"sudo service codedeploy-agent status \n",
-								"cd /usr/share/tomcat8/bin",
-								"sudo touch setenv.sh",
-								"sudo chmod 700 setenv.sh",
-								"sudo echo '#!/bin/sh' >> setenv.sh",
-								{
-									"Fn::Join": [
-										"", [
-											"echo 'JAVA_OPTS=\"$JAVA_OPTS -Dspring.datasource.url=jdbc:mysql://",
-											{
-												"Fn::GetAtt": [
-													"DBInstance",
-													"Endpoint.Address"
-												]
-											},
-											":3306/csye6225\"' >> setenv.sh"
-										]
-									]
-								},
-								"echo 'JAVA_OPTS=\"$JAVA_OPTS -Dspring.datasource.username=csye6225master\"' >> setenv.sh",
-								"echo 'JAVA_OPTS=\"$JAVA_OPTS -Dspring.datasource.password=csye6225password\"' >> setenv.sh",
-								"sudo chmod +x setenv.sh",
-								"sudo chown tomcat8:tomcat8 setenv.sh",
-								"cd /var/lib/tomcat8/webapps",
-								"sudo rm -r ROOT",
-								"mkdir /tmp/cwlogs/",
-								"touch /tmp/cwlogs/apacheaccess.conf",
-								"echo '[general]' >> /tmp/cwlogs/apacheaccess.conf",
-								"echo 'state_file= /var/awslogs/agent-state\n' >> /tmp/cwlogs/apacheaccess.conf",
-								"echo '[logstream1]' >> /tmp/cwlogs/apacheaccess.conf",
-								"echo 'file = /var/lib/tomcat8/logs/catalina.out' >> /tmp/cwlogs/apacheaccess.conf",
-								{
-									"Fn::Join": [
-										"", [
-											"echo 'log_group_name = ",
-											{
-												"Ref": "WebServerLogGroup"
-											},
-											"' >> /tmp/cwlogs/apacheaccess.conf"
-										]
-									]
-								},
-								{
-									"Fn::Join": [
-										"", [
-											"echo 'log_stream_name = ",
-											"team-log-stream' >> /tmp/cwlogs/apacheaccess.conf"
-										]
-									]
-								},
-								"echo 'datetime_format = %d/%b/%Y:%H:%M:%S' >> /tmp/cwlogs/apacheaccess.conf",
-								"chmod +r /tmp/cwlogs/apacheaccess.conf",
-								"chown apache:apache /tmp/cwlogs/apacheaccess.conf",
-								"curl https://s3.amazonaws.com/aws-cloudwatch/downloads/latest/awslogs-agent-setup.py -O",
-
-								{
-									"Fn::Join": [
-										"", [
-											"python awslogs-agent-setup.py -n -r ",
-											{
-												"Ref": "AWS::Region"
-											},
-											" -c /tmp/cwlogs/apacheaccess.conf || error_exit 'Cloud Watch Failed'"
-										]
-									]
-								},
-								"cd /etc/systemd/system",
-								"sudo touch awslogs.service",
-								"sudo chmod 777 awslogs.service",
-								"sudo echo '[Unit]' >> awslogs.service",
-								"sudo echo 'Description=Service for CloudWatch Logs agent' >> awslogs.service",
-								"sudo echo 'After=rc-local.service'>> awslogs.service",
-								"sudo echo '[Service]'>> awslogs.service",
-								"sudo echo 'Type=simple'>> awslogs.service",
-								"sudo echo 'Restart=always'>> awslogs.service",
-								"sudo echo 'TimeoutSec=infinity'>> awslogs.service",
-								"sudo echo 'PDFFile=/var/awslogs/state/awslogs.pid'>> awslogs.service",
-								"sudo echo 'ExecStart=/var/awslogs/bin/awslogs-agent-launcher.sh --start --background --pidfile $PIDFILE --user awslogs --chuid awslogs &amp;'>> awslogs.service",
-								"sudo echo '[Install]'>> awslogs.service",
-								"sudo echo 'WantedBy=multi-user.target'>> awslogs.service",
-								"sudo systemctl start awslogs.service",
-								"sudo systemctl stop awslogs.service",
-								"sudo systemctl restart awslogs.service",
-								"sudo systemctl enable awslogs.service"
-							]
-						]
-					}
-				}
-			}
-		},
-	"EC2Instance2": {
-			"Type": "AWS::EC2::Instance",
-			"Properties": {
-				"ImageId": {
-					"Ref": "ImageId"
-				},
-				"InstanceType": {
-					"Ref": "InstanceType"
-				},
-				"SecurityGroupIds": [{
-					"Fn::GetAtt": [
-						"SecurityGroup",
-						"GroupId"
-					]
-				}],
-				"KeyName": {
-					"Ref": "KeyName"
-				},
-				"Tags": [{
-					"Key": "NASP",
-					"Value": "CSYE6225"
-				}],
-				"DisableApiTermination": "false",
-				"IamInstanceProfile": {
-					"Ref": "MyIamProfile"
-				},
-				"UserData": {
-					"Fn::Base64": {
-						"Fn::Join": [
-							"\n", [
-								"#!/bin/bash",
-								"sudo apt-get update",
-								"sudo apt-get install openjdk-8-jre-headless -y \n",
-								"sudo apt-get install python -y \n",
-								"sudo apt-get install tomcat8 -y \n",
-								"sudo service tomcat8 start \n",
-								"sudo apt-get update",
-								"sudo apt-get install ruby -y \n",
-								"sudo apt-get install wget \n",
-								"cd /home/ubuntu",
-								"wget https://aws-codedeploy-us-east-1.s3.amazonaws.com/latest/install\n",
-								"sudo chmod +x ./install",
-								"sudo ./install auto \n",
-								"sudo service codedeploy-agent start \n",
-								"sudo service codedeploy-agent status \n",
-								"cd /usr/share/tomcat8/bin",
-								"sudo touch setenv.sh",
-								"sudo chmod 700 setenv.sh",
-								"sudo echo '#!/bin/sh' >> setenv.sh",
-								{
-									"Fn::Join": [
-										"", [
-											"echo 'JAVA_OPTS=\"$JAVA_OPTS -Dspring.datasource.url=jdbc:mysql://",
-											{
-												"Fn::GetAtt": [
-													"DBInstance",
-													"Endpoint.Address"
-												]
-											},
-											":3306/csye6225\"' >> setenv.sh"
-										]
-									]
-								},
-								"echo 'JAVA_OPTS=\"$JAVA_OPTS -Dspring.datasource.username=csye6225master\"' >> setenv.sh",
-								"echo 'JAVA_OPTS=\"$JAVA_OPTS -Dspring.datasource.password=csye6225password\"' >> setenv.sh",
-								"sudo chmod +x setenv.sh",
-								"sudo chown tomcat8:tomcat8 setenv.sh",
-								"cd /var/lib/tomcat8/webapps",
-								"sudo rm -r ROOT",
-								"mkdir /tmp/cwlogs/",
-								"touch /tmp/cwlogs/apacheaccess.conf",
-								"echo '[general]' >> /tmp/cwlogs/apacheaccess.conf",
-								"echo 'state_file= /var/awslogs/agent-state\n' >> /tmp/cwlogs/apacheaccess.conf",
-								"echo '[logstream1]' >> /tmp/cwlogs/apacheaccess.conf",
-								"echo 'file = /var/lib/tomcat8/logs/catalina.out' >> /tmp/cwlogs/apacheaccess.conf",
-								{
-									"Fn::Join": [
-										"", [
-											"echo 'log_group_name = ",
-											{
-												"Ref": "WebServerLogGroup"
-											},
-											"' >> /tmp/cwlogs/apacheaccess.conf"
-										]
-									]
-								},
-								{
-									"Fn::Join": [
-										"", [
-											"echo 'log_stream_name = ",
-											"team-log-stream' >> /tmp/cwlogs/apacheaccess.conf"
-										]
-									]
-								},
-								"echo 'datetime_format = %d/%b/%Y:%H:%M:%S' >> /tmp/cwlogs/apacheaccess.conf",
-								"chmod +r /tmp/cwlogs/apacheaccess.conf",
-								"chown apache:apache /tmp/cwlogs/apacheaccess.conf",
-								"curl https://s3.amazonaws.com/aws-cloudwatch/downloads/latest/awslogs-agent-setup.py -O",
-
-								{
-									"Fn::Join": [
-										"", [
-											"python awslogs-agent-setup.py -n -r ",
-											{
-												"Ref": "AWS::Region"
-											},
-											" -c /tmp/cwlogs/apacheaccess.conf || error_exit 'Cloud Watch Failed'"
-										]
-									]
-								},
-								"cd /etc/systemd/system",
-								"sudo touch awslogs.service",
-								"sudo chmod 777 awslogs.service",
-								"sudo echo '[Unit]' >> awslogs.service",
-								"sudo echo 'Description=Service for CloudWatch Logs agent' >> awslogs.service",
-								"sudo echo 'After=rc-local.service'>> awslogs.service",
-								"sudo echo '[Service]'>> awslogs.service",
-								"sudo echo 'Type=simple'>> awslogs.service",
-								"sudo echo 'Restart=always'>> awslogs.service",
-								"sudo echo 'TimeoutSec=infinity'>> awslogs.service",
-								"sudo echo 'PDFFile=/var/awslogs/state/awslogs.pid'>> awslogs.service",
-								"sudo echo 'ExecStart=/var/awslogs/bin/awslogs-agent-launcher.sh --start --background --pidfile $PIDFILE --user awslogs --chuid awslogs &amp;'>> awslogs.service",
-								"sudo echo '[Install]'>> awslogs.service",
-								"sudo echo 'WantedBy=multi-user.target'>> awslogs.service",
-								"sudo systemctl start awslogs.service",
-								"sudo systemctl stop awslogs.service",
-								"sudo systemctl restart awslogs.service",
-								"sudo systemctl enable awslogs.service"
-							]
-						]
-					}
-				}
-			}
-		},
-	"EC2Instance3": {
-			"Type": "AWS::EC2::Instance",
-			"Properties": {
-				"ImageId": {
-					"Ref": "ImageId"
-				},
-				"InstanceType": {
-					"Ref": "InstanceType"
-				},
-				"SecurityGroupIds": [{
-					"Fn::GetAtt": [
-						"SecurityGroup",
-						"GroupId"
-					]
-				}],
-				"KeyName": {
-					"Ref": "KeyName"
-				},
-				"Tags": [{
-					"Key": "NASP",
-					"Value": "CSYE6225"
-				}],
-				"DisableApiTermination": "false",
-				"IamInstanceProfile": {
-					"Ref": "MyIamProfile"
-				},
-				"UserData": {
-					"Fn::Base64": {
-						"Fn::Join": [
-							"\n", [
-								"#!/bin/bash",
-								"sudo apt-get update",
-								"sudo apt-get install openjdk-8-jre-headless -y \n",
-								"sudo apt-get install python -y \n",
-								"sudo apt-get install tomcat8 -y \n",
-								"sudo service tomcat8 start \n",
-								"sudo apt-get update",
-								"sudo apt-get install ruby -y \n",
-								"sudo apt-get install wget \n",
-								"cd /home/ubuntu",
-								"wget https://aws-codedeploy-us-east-1.s3.amazonaws.com/latest/install\n",
-								"sudo chmod +x ./install",
-								"sudo ./install auto \n",
-								"sudo service codedeploy-agent start \n",
-								"sudo service codedeploy-agent status \n",
-								"cd /usr/share/tomcat8/bin",
-								"sudo touch setenv.sh",
-								"sudo chmod 700 setenv.sh",
-								"sudo echo '#!/bin/sh' >> setenv.sh",
-								{
-									"Fn::Join": [
-										"", [
-											"echo 'JAVA_OPTS=\"$JAVA_OPTS -Dspring.datasource.url=jdbc:mysql://",
-											{
-												"Fn::GetAtt": [
-													"DBInstance",
-													"Endpoint.Address"
-												]
-											},
-											":3306/csye6225\"' >> setenv.sh"
-										]
-									]
-								},
-								"echo 'JAVA_OPTS=\"$JAVA_OPTS -Dspring.datasource.username=csye6225master\"' >> setenv.sh",
-								"echo 'JAVA_OPTS=\"$JAVA_OPTS -Dspring.datasource.password=csye6225password\"' >> setenv.sh",
-								"sudo chmod +x setenv.sh",
-								"sudo chown tomcat8:tomcat8 setenv.sh",
-								"cd /var/lib/tomcat8/webapps",
-								"sudo rm -r ROOT",
-								"mkdir /tmp/cwlogs/",
-								"touch /tmp/cwlogs/apacheaccess.conf",
-								"echo '[general]' >> /tmp/cwlogs/apacheaccess.conf",
-								"echo 'state_file= /var/awslogs/agent-state\n' >> /tmp/cwlogs/apacheaccess.conf",
-								"echo '[logstream1]' >> /tmp/cwlogs/apacheaccess.conf",
-								"echo 'file = /var/lib/tomcat8/logs/catalina.out' >> /tmp/cwlogs/apacheaccess.conf",
-								{
-									"Fn::Join": [
-										"", [
-											"echo 'log_group_name = ",
-											{
-												"Ref": "WebServerLogGroup"
-											},
-											"' >> /tmp/cwlogs/apacheaccess.conf"
-										]
-									]
-								},
-								{
-									"Fn::Join": [
-										"", [
-											"echo 'log_stream_name = ",
-											"team-log-stream' >> /tmp/cwlogs/apacheaccess.conf"
-										]
-									]
-								},
-								"echo 'datetime_format = %d/%b/%Y:%H:%M:%S' >> /tmp/cwlogs/apacheaccess.conf",
-								"chmod +r /tmp/cwlogs/apacheaccess.conf",
-								"chown apache:apache /tmp/cwlogs/apacheaccess.conf",
-								"curl https://s3.amazonaws.com/aws-cloudwatch/downloads/latest/awslogs-agent-setup.py -O",
-
-								{
-									"Fn::Join": [
-										"", [
-											"python awslogs-agent-setup.py -n -r ",
-											{
-												"Ref": "AWS::Region"
-											},
-											" -c /tmp/cwlogs/apacheaccess.conf || error_exit 'Cloud Watch Failed'"
-										]
-									]
-								},
-								"cd /etc/systemd/system",
-								"sudo touch awslogs.service",
-								"sudo chmod 777 awslogs.service",
-								"sudo echo '[Unit]' >> awslogs.service",
-								"sudo echo 'Description=Service for CloudWatch Logs agent' >> awslogs.service",
-								"sudo echo 'After=rc-local.service'>> awslogs.service",
-								"sudo echo '[Service]'>> awslogs.service",
-								"sudo echo 'Type=simple'>> awslogs.service",
-								"sudo echo 'Restart=always'>> awslogs.service",
-								"sudo echo 'TimeoutSec=infinity'>> awslogs.service",
-								"sudo echo 'PDFFile=/var/awslogs/state/awslogs.pid'>> awslogs.service",
-								"sudo echo 'ExecStart=/var/awslogs/bin/awslogs-agent-launcher.sh --start --background --pidfile $PIDFILE --user awslogs --chuid awslogs &amp;'>> awslogs.service",
-								"sudo echo '[Install]'>> awslogs.service",
-								"sudo echo 'WantedBy=multi-user.target'>> awslogs.service",
-								"sudo systemctl start awslogs.service",
-								"sudo systemctl stop awslogs.service",
-								"sudo systemctl restart awslogs.service",
-								"sudo systemctl enable awslogs.service"
-							]
-						]
-					}
-				}
-			}
-		},
 		"WebServerLogGroup": {
 			"Type": "AWS::Logs::LogGroup",
 			"Properties": {
 				"RetentionInDays": 7
 			}
 		},
-		
-		"ElasticLoadBalancer": {
-			"Type": "AWS::ElasticLoadBalancing::LoadBalancer",
+		"MyLoadBalancer": {
+			"Type": "AWS::ElasticLoadBalancingV2::LoadBalancer",
 			"Properties": {
-				"AvailabilityZones": [{
-					"Ref": "AvailabilityZone"
-				}],
-				"Listeners": [{
-					"LoadBalancerPort": "80",
-					"InstancePort": "80",
-					"Protocol": "HTTP"
-				}],
-				"Instances": [{"Ref": "EC2Instance"}, {"Ref": "EC2Instance2"}, {"Ref": "EC2Instance3"}] 
+				"Scheme": "internet-facing",
+				"Subnets": [
+					{
+						"Ref": "subnet1"
+					},
+					{
+						"Ref": "subnet2"
+					}
+				],
+				"LoadBalancerAttributes": [
+					{
+						"Key": "idle_timeout.timeout_seconds",
+						"Value": "60"
+					}
+				],
+				"SecurityGroups": [
+					{
+						"Ref": "LoadBalancerSecurityGroup"
+					}
+				],
+				"Tags": [
+					{
+						"Key": "NASP",
+						"Value": "CSYE6225"
+					}
+				]
+			}
+		},
+		"Listener": {
+			"Type": "AWS::ElasticLoadBalancingV2::Listener",
+			"Properties": {
+				"Certificates": [
+					{
+						"CertificateArn": "arn:aws:acm:us-east-1:035191268695:certificate/d43a312f-5fda-408b-9e56-2d1db691360a"
+					}
+				],
+				"DefaultActions": [
+					{
+						"Type": "forward",
+						"TargetGroupArn": {
+							"Ref": "myTargetGroup"
+						}
+					}
+				],
+				"LoadBalancerArn": {
+					"Ref": "MyLoadBalancer"
+				},
+				"Port": "443",
+				"Protocol": "HTTPS"
+			}
+		},
+		"myTargetGroup": {
+			"Type": "AWS::ElasticLoadBalancingV2::TargetGroup",
+			"Properties": {
+				"HealthCheckIntervalSeconds": 40,
+				"HealthCheckTimeoutSeconds": 30,
+				"Protocol": "HTTP",
+				"HealthCheckProtocol": "HTTP",
+				"HealthCheckPort": "8080",
+				"TargetGroupAttributes": [
+					{
+						"Key": "deregistration_delay.timeout_seconds",
+						"Value": "20"
+					}
+				],
+				"Port": 8080,
+				"VpcId": "placeHolder",
+				"Tags": [
+					{
+						"Key": "NASP",
+						"Value": "CSYE6225"
+					}
+				]
+			}
+		}
+		,
+		"LaunchConfig": {
+			"Type": "AWS::AutoScaling::LaunchConfiguration",
+			"Properties": {
+				"AssociatePublicIpAddress": true,
+				"ImageId": {
+					"Ref": "ImageId"
+				},
+				"SecurityGroups": [
+					{
+						"Fn::GetAtt": [
+							"SecurityGroup",
+							"GroupId"
+						]
+					}
+				],
+				"InstanceType": {"Ref": "InstanceType"},
+				"IamInstanceProfile": {
+					"Ref": "MyIamProfile"
+				},
+				"KeyName": {
+					"Ref": "KeyName"
+				},
+				"DisableApiTermination": "false",
+				"BlockDeviceMappings": [
+					{
+						"DeviceName": "/dev/sda1",
+						"Ebs": {
+							"VolumeSize": "16",
+							"VolumeType": "gp2"
+						}
+					}
+				],
+				"UserData": {
+					"Fn::Base64": {
+						"Fn::Join": [
+							"\n", [
+								"#!/bin/bash",
+								"sudo apt-get update",
+								"sudo apt-get install openjdk-8-jre-headless -y \n",
+								"sudo apt-get install python -y \n",
+								"sudo apt-get install tomcat8 -y \n",
+								"sudo service tomcat8 start \n",
+								"sudo apt-get update",
+								"sudo apt-get install ruby -y \n",
+								"sudo apt-get install wget \n",
+								"cd /home/ubuntu",
+								"wget https://aws-codedeploy-us-east-1.s3.amazonaws.com/latest/install\n",
+								"sudo chmod +x ./install",
+								"sudo ./install auto \n",
+								"sudo service codedeploy-agent start \n",
+								"sudo service codedeploy-agent status \n",
+								"cd /usr/share/tomcat8/bin",
+								"sudo touch setenv.sh",
+								"sudo chmod 700 setenv.sh",
+								"sudo echo '#!/bin/sh' >> setenv.sh",
+								{
+									"Fn::Join": [
+										"", [
+											"echo 'JAVA_OPTS=\"$JAVA_OPTS -Dspring.datasource.url=jdbc:mysql://",
+											{
+												"Fn::GetAtt": [
+													"DBInstance",
+													"Endpoint.Address"
+												]
+											},
+											":3306/csye6225\"' >> setenv.sh"
+										]
+									]
+								},
+								"echo 'JAVA_OPTS=\"$JAVA_OPTS -Dspring.datasource.username=csye6225master\"' >> setenv.sh",
+								"echo 'JAVA_OPTS=\"$JAVA_OPTS -Dspring.datasource.password=csye6225password\"' >> setenv.sh",
+								"sudo chmod +x setenv.sh",
+								"sudo chown tomcat8:tomcat8 setenv.sh",
+								"cd /var/lib/tomcat8/webapps",
+								"sudo rm -r ROOT",
+								"mkdir /tmp/cwlogs/",
+								"touch /tmp/cwlogs/apacheaccess.conf",
+								"echo '[general]' >> /tmp/cwlogs/apacheaccess.conf",
+								"echo 'state_file= /var/awslogs/agent-state\n' >> /tmp/cwlogs/apacheaccess.conf",
+								"echo '[logstream1]' >> /tmp/cwlogs/apacheaccess.conf",
+								"echo 'file = /var/lib/tomcat8/logs/catalina.out' >> /tmp/cwlogs/apacheaccess.conf",
+								{
+									"Fn::Join": [
+										"", [
+											"echo 'log_group_name = ",
+											{
+												"Ref": "WebServerLogGroup"
+											},
+											"' >> /tmp/cwlogs/apacheaccess.conf"
+										]
+									]
+								},
+								{
+									"Fn::Join": [
+										"", [
+											"echo 'log_stream_name = ",
+											"team-log-stream' >> /tmp/cwlogs/apacheaccess.conf"
+										]
+									]
+								},
+								"echo 'datetime_format = %d/%b/%Y:%H:%M:%S' >> /tmp/cwlogs/apacheaccess.conf",
+								"chmod +r /tmp/cwlogs/apacheaccess.conf",
+								"chown apache:apache /tmp/cwlogs/apacheaccess.conf",
+								"curl https://s3.amazonaws.com/aws-cloudwatch/downloads/latest/awslogs-agent-setup.py -O",
+
+								{
+									"Fn::Join": [
+										"", [
+											"python awslogs-agent-setup.py -n -r ",
+											{
+												"Ref": "AWS::Region"
+											},
+											" -c /tmp/cwlogs/apacheaccess.conf || error_exit 'Cloud Watch Failed'"
+										]
+									]
+								},
+								"cd /etc/systemd/system",
+								"sudo touch awslogs.service",
+								"sudo chmod 777 awslogs.service",
+								"sudo echo '[Unit]' >> awslogs.service",
+								"sudo echo 'Description=Service for CloudWatch Logs agent' >> awslogs.service",
+								"sudo echo 'After=rc-local.service'>> awslogs.service",
+								"sudo echo '[Service]'>> awslogs.service",
+								"sudo echo 'Type=simple'>> awslogs.service",
+								"sudo echo 'Restart=always'>> awslogs.service",
+								"sudo echo 'TimeoutSec=infinity'>> awslogs.service",
+								"sudo echo 'PDFFile=/var/awslogs/state/awslogs.pid'>> awslogs.service",
+								"sudo echo 'ExecStart=/var/awslogs/bin/awslogs-agent-launcher.sh --start --background --pidfile $PIDFILE --user awslogs --chuid awslogs &amp;'>> awslogs.service",
+								"sudo echo '[Install]'>> awslogs.service",
+								"sudo echo 'WantedBy=multi-user.target'>> awslogs.service",
+								"sudo systemctl start awslogs.service",
+								"sudo systemctl stop awslogs.service",
+								"sudo systemctl restart awslogs.service",
+								"sudo systemctl enable awslogs.service"
+							]
+						]
+					}
+				}
 			}
 		},
 		"DBInstance": {
@@ -641,11 +511,22 @@
 					"Ref": "HostedZoneName"
 				},
 				"Comment": "DNS name for my instance.",
+				"HostedZoneName": "placeHolder",
 				"Type": "A",
-				"TTL": "60",
-				"ResourceRecords": [{
-					"Fn::GetAtt": ["EC2Instance", "PublicIp"]
-				}]
+				"AliasTarget": {
+					"HostedZoneId": {
+						"Fn::GetAtt": [
+							"MyLoadBalancer",
+							"CanonicalHostedZoneID"
+						]
+					},
+					"DNSName": {
+						"Fn::GetAtt": [
+							"MyLoadBalancer",
+							"DNSName"
+						]
+					}
+				}
 			}
 		},
 		"CodeDeployEC2ServiceRolenew": {
