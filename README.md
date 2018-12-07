@@ -1,11 +1,6 @@
-# csye6225-fall2017
-NetWork Structures and Cloud Computing
+# Cloud Store
+Cloud Computing
 =======
-# Team Members #
-* Ashwini Thaokar (thaokar.a@husky.neu.edu)
-* Niravra Kar (kar.n@husky.neu.edu)
-* Parakh Mahajan (mahajan.p@husky.neu.edu)
-* Sumedh Saraf (saraf.s@husky.neu.edu)
 # Requirements #
 * IntelliJ IDEA Ultimate
 * Gradle Build Tool
@@ -82,4 +77,4 @@ Continuous integration tests were build using Travis CI
 * Add a HTTP request for delteing attachment of task for users with method as DELETE and Path as /tasks/tasksId/attachmentId
 # Travis CI link for the Project #
 [Travis CI Link](https://travis-ci.com/Niravra/csye6225-fall2017)
->>>>>>> assignment7
+
